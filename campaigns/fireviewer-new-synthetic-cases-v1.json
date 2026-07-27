@@ -1,0 +1,45 @@
+{
+  "schema_version": 2,
+  "production_id": "fireviewer-new-synthetic-cases-v1",
+  "data_origin": "new_synthetic_generation",
+  "target_per_category": 4096,
+  "maximum_target_per_category": 8192,
+  "pilot_per_category": 8,
+  "batch_size": 64,
+  "resolution": [1920, 1080],
+  "render_profile": "omniverse_realworld_hd_v1",
+  "real_world_catalog": "/workspace/fireviewer-sdg/input/event-catalog-4096-hd-v2.json",
+  "rt_subframes": 16,
+  "warmup_steps": 48,
+  "storage": {
+    "kind": "network_volume",
+    "mount_point": "/workspace",
+    "minimum_total_gb": 1000,
+    "reserve_free_gb": 100,
+    "estimated_max_case_bytes": 12582912,
+    "minimum_fire_events": 512,
+    "estimated_max_event_input_bytes": 536870912
+  },
+  "categories": [
+    {
+      "category": "terrestrial_fire_points",
+      "generator": "isaac_terrestrial_fire_points",
+      "seed_base": 610000000
+    },
+    {
+      "category": "france_cross_view",
+      "generator": "isaac_france_cross_view",
+      "seed_base": 620000000
+    },
+    {
+      "category": "response_engagement",
+      "generator": "isaac_response_engagement",
+      "seed_base": 630000000
+    },
+    {
+      "category": "france_incident_days",
+      "generator": "fictional_incident_day",
+      "seed_base": 640000000
+    }
+  ]
+}

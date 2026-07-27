@@ -1,0 +1,4 @@
+[paths]
+data_root = "/opt/fireviewer-data/ov"
+cache_root = "/opt/fireviewer-cache/ov"
+logs_root = "/opt/fireviewer-logs/ov"

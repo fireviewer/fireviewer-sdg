@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "scenario_id": "pilot-rural-mountain-v1",
+  "scene_usd": "/workspace/fireviewer-sdg/scenes/pilot-rural-mountain/scene.usd",
+  "output_dir": "/workspace/fireviewer-sdg/runs/pilot-rural-mountain-v1/render",
+  "frame_count": 24,
+  "resolution": [1280, 720],
+  "seed": 20260722,
+  "flow_required": true,
+  "camera_poses": [
+    {
+      "id": "road-day-wide",
+      "position": [120.0, -80.0, 12.0],
+      "look_at": [0.0, 0.0, 28.0],
+      "viewpoint": "road",
+      "light": "day"
+    },
+    {
+      "id": "building-night-wide",
+      "position": [65.0, 40.0, 24.0],
+      "look_at": [-15.0, 10.0, 34.0],
+      "viewpoint": "building",
+      "light": "night"
+    }
+  ]
+}

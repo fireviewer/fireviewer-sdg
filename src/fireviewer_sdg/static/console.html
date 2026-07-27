@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FireViewer — Console de production</title>
+    <link rel="stylesheet" href="/static/console.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand"><strong>FireViewer</strong><span>— Console de production</span></div>
+      <div id="export-guard" class="export-guard" aria-live="polite">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3m-11 0h12v10H6z" /></svg>
+        <span>Aucun export avant validation</span>
+      </div>
+      <button id="logout" class="icon-button" type="button" aria-label="Déconnecter">↪</button>
+    </header>
+
+    <main class="workspace">
+      <aside class="category-rail" aria-label="Catégories de production">
+        <section id="setup-readiness" class="setup-readiness" aria-live="polite">
+          <strong>Préparation des entrées</strong>
+          <span>État indisponible avant connexion.</span>
+          <span id="setup-progress" class="setup-progress"></span>
+          <ul id="setup-progress-facts" class="setup-progress-facts"></ul>
+          <ul id="setup-stages" class="setup-stages"></ul>
+        </section>
+        <section id="production-progress" class="production-monitor" aria-live="polite">
+          <div class="production-monitor-heading">
+            <strong id="progress-title">Production inactive</strong>
+            <span id="progress-percent">0 %</span>
+          </div>
+          <div class="production-progress-track">
+            <span id="production-progress-value"></span>
+          </div>
+          <span id="progress-metrics">Aucun lot lancé.</span>
+          <span id="progress-detail">Les compteurs proviennent uniquement des fichiers écrits.</span>
+          <figure id="live-preview-frame" class="live-preview-frame" hidden>
+            <img id="live-preview" alt="Dernier aperçu produit, non validé" />
+            <figcaption id="live-preview-caption">Dernier aperçu non validé</figcaption>
+          </figure>
+        </section>
+        <div id="categories"></div>
+        <button id="start-production" class="start-button" type="button" disabled>Setup requis — pilote verrouillé</button>
+        <button id="create-training-release" class="release-button" type="button" disabled>
+          Créer la livraison training
+        </button>
+      </aside>
+
+      <section class="inspection-column">
+        <div class="canvas-toolbar">
+          <button id="previous" type="button" class="toolbar-button" aria-label="Cas précédent" disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+            Précédent
+          </button>
+          <div id="case-counter" class="case-counter">Aucun cas produit</div>
+          <button id="next" type="button" class="toolbar-button" aria-label="Cas suivant" disabled>
+            Suivant
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+          </button>
+          <button id="toggle-annotations" type="button" class="toolbar-button annotations-toggle" aria-pressed="true" disabled>
+            Annotations
+          </button>
+        </div>
+
+        <div id="case-canvas" class="case-canvas">
+          <div id="empty-state" class="empty-state">
+            <strong>En attente de nouveaux cas</strong>
+            <span>Les rendus restent sur le volume du pod jusqu’à leur validation.</span>
+          </div>
+          <img id="preview" alt="Aperçu du cas sélectionné" hidden />
+          <div id="overlays" class="overlays" aria-hidden="true"></div>
+        </div>
+
+        <section class="live-log" aria-labelledby="log-heading">
+          <div class="section-heading">
+            <h2 id="log-heading">Journal en direct</h2>
+            <span id="connection-state">Hors connexion</span>
+          </div>
+          <pre id="logs">Saisissez le jeton du pod pour suivre la production.</pre>
+        </section>
+      </section>
+
+      <aside class="inspector" aria-label="Inspection et validation du cas">
+        <section>
+          <h2>Cas</h2>
+          <dl id="case-details" class="data-list"></dl>
+        </section>
+        <section>
+          <h2>Vérité synthétique</h2>
+          <pre id="truth-details" class="json-block">—</pre>
+        </section>
+        <section>
+          <h2>Caméra</h2>
+          <pre id="camera-details" class="json-block">—</pre>
+        </section>
+        <section>
+          <h2>Fichiers</h2>
+          <ul id="file-details" class="file-list"></ul>
+        </section>
+        <section class="review-section">
+          <fieldset class="quality-checklist">
+            <legend>Contrôles qualité obligatoires</legend>
+            <div id="quality-checks"></div>
+          </fieldset>
+          <label for="review-notes">Notes de revue</label>
+          <textarea id="review-notes" maxlength="1000" placeholder="Décrivez tout défaut visuel ou contractuel…" disabled></textarea>
+          <div id="review-state" class="review-state">Non révisé</div>
+          <div class="review-actions">
+            <button id="accept" type="button" class="accept-button" disabled>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6" /></svg>
+              Valider le cas
+            </button>
+            <button id="reject" type="button" class="reject-button" disabled>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+              Rejeter
+            </button>
+          </div>
+        </section>
+      </aside>
+    </main>
+
+    <dialog id="login-dialog" class="login-dialog">
+      <form id="login-form" method="dialog">
+        <h1>Accéder à la console du pod</h1>
+        <p>Le jeton reste dans cette session de navigateur et n’est jamais placé dans l’URL.</p>
+        <label for="reviewer-id">Identifiant du réviseur</label>
+        <input id="reviewer-id" name="reviewer" value="operator" pattern="[a-z0-9][a-z0-9_\-]{0,95}" autocomplete="username" required />
+        <label for="auth-token">Jeton d’authentification</label>
+        <input id="auth-token" name="token" type="password" minlength="32" autocomplete="current-password" required />
+        <p id="login-error" class="login-error" role="alert"></p>
+        <button type="submit">Ouvrir la console</button>
+      </form>
+    </dialog>
+
+    <script src="/static/console.js" defer></script>
+  </body>
+</html>
