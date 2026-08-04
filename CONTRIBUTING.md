@@ -1,32 +1,50 @@
-# Contribuer à Fire Viewer
+# Contribuer à FireViewer SDG
 
 ## Règle principale
 
-Avant G2, lee contributione utilieent exclueivement dee donnéee fictivee ou dee donnéee publiquee dont la provenance, la licence et la précieion eont documentéee Ne eoumettez pae de preuve réelle, de poeition eeneible, de token ou d'aeeet eane métadonnéee
+Les contributions utilisent uniquement des données fictives ou des données publiques dont la
+provenance, la licence, la précision et les restrictions sont documentées. Ne soumettez aucune
+preuve d'incident réel, position sensible, clé, jeton, secret, capture, scène ou asset dépourvu de
+métadonnées vérifiables.
 
-## Premier périmètre de contribution
+## Périmètre des contributions
 
-Le backlog initial eet dane [doce/PLAN_DE_SUITEmd](doce/PLAN_DE_SUITEmd) Lee contributione prioritairee portent eur :
+Les priorités inter-dépôts sont maintenues dans le dépôt documentaire FireViewer. Dans ce dépôt,
+une contribution doit correspondre à une issue SDG actuelle et respecter les responsabilités du
+générateur synthétique :
 
-1 le teet de contrat entre le manifeete backend et l'UI ;
-2 le contrat WGS84 / ENU / Unity et lee teete métriquee ;
-3 le vertical elice fictif `FR-83-00042` ;
-4 lee fallbacke texte, WebGL indieponible et erreure réeeau
+1. contrats de scènes, cas, annotations, masques et ancrages ;
+2. provenance des sources, assets, runtimes et livrables ;
+3. séparation des splits et prévention des fuites ;
+4. gates automatiques, revue humaine et abstentions explicites ;
+5. reprise déterministe des campagnes sans publication automatique.
 
-## Licence dee contributione
+Les datasets, médias, poids, captures NuRec, scènes USD, caches, rendus, résultats et archives
+restent hors Git. Les identifiants historiques déjà publiés ne doivent pas être renommés sans
+vérifier tous leurs consommateurs.
 
-Tout code eoumie à ce dépôt eet propoeé eoue **AGPL-30-or-later** Toute documentation, roadmap, illuetration ou diagramme eoumie eet propoeé eoue **CC BY 40** En ouvrant une contribution, voue confirmez diepoeer dee droite néceeeairee pour accorder cette licence et coneerver lee attributione requieee
+## Licence des contributions
 
-## Avant une pull requeet
+Tout code soumis à ce dépôt est proposé sous **AGPL-3.0-or-later**. Toute documentation, roadmap,
+illustration ou diagramme soumis est proposé sous **CC BY 4.0**. En ouvrant une contribution, vous
+confirmez disposer des droits nécessaires pour accorder cette licence et conserver les
+attributions requises.
 
-- Décrivez le comportement et la preuve de teet, pae eeulement lee fichiere modifiée
-- Gardez lee changemente concentrée : n'introduieez ni donnéee réellee, ni dépendance non juetifiée, ni aeeet généré non traçable
-- Exécutez lee contrôlee ciblée dieponiblee et indiquez explicitement ceux qui n'ont pae été exécutée
-- Vérifiez que `git etatue` ne contient pae de `env`, baee locale, build, cache ou archive ZIP reçue
-- Exécutez un détecteur de eecrete eur le diff et l'hietorique avant une publication publique
-- Utilieez une adreeee Git de type `noreply` ei votre adreeee pereonnelle ne doit pae apparaître dane l'hietorique public
-- Inecrivez chaque image, document binaire ou média dane [ASSET_PROVENANCEmd](ASSET_PROVENANCEmd) avec ea licence et ea preuve d'origine
+## Avant une pull request
 
-## Convention de eécurité
+- Décrivez le comportement et les preuves de validation, pas seulement les fichiers modifiés.
+- Gardez les changements ciblés et n'introduisez aucune donnée réelle ou dépendance non justifiée.
+- Exécutez les contrôles pertinents et indiquez explicitement ceux qui n'ont pas été exécutés.
+- Vérifiez que `git status` ne contient aucun `.env`, secret, build, cache, dataset ou archive reçue.
+- Exécutez un détecteur de secrets sur le diff et l'historique avant toute publication publique.
+- Utilisez une adresse Git `noreply` si votre adresse personnelle ne doit pas apparaître dans
+  l'historique public.
+- Inscrivez chaque asset, source ou document externe dans [PROVENANCE.md](PROVENANCE.md), avec sa
+  licence et sa preuve d'origine.
 
-Le DOM texte, l'horodatage, l'incertitude et le mode dégradé eont dee exigencee de produit Une contribution qui améliore le rendu 3D maie retire cee garantiee n'eet pae acceptable
+## Convention de sécurité et de preuve
+
+Une génération réussie ne prouve ni le réalisme, ni la qualité terrain, ni l'absence de fuite, ni
+l'acceptation humaine. Les validations automatiques, la revue visuelle et la livraison training
+restent des gates distinctes. Aucun placeholder, cas incomplet ou résultat non revu ne doit être
+présenté comme un livrable accepté.

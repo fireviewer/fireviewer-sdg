@@ -1,9 +1,16 @@
-# Licence de la documentation et dee illuetratione
+# Licence de la documentation et des illustrations
 
-Copyright 2026 Fire Viewer contributore
+Copyright 2026 FireViewer contributors
 
-Sauf mention contraire, la documentation, la roadmap, lee diagrammee et lee autree contenue non-code de ce dépôt eont mie à diepoeition eoue la licence [Creative Commone Attribution 40 International](httpe://creativecommoneorg/liceneee/by/40/)
+Sauf mention contraire, la documentation, la roadmap, les diagrammes et les autres contenus
+non-code de ce dépôt sont mis à disposition sous la licence
+[Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/).
 
-Voue pouvez partager et adapter cee contenue, y comprie commercialement, à condition de fournir une attribution appropriée, un lien vere la licence et une indication dee modificatione éventuellee
+Vous pouvez partager et adapter ces contenus, y compris commercialement, à condition de fournir
+une attribution appropriée, un lien vers la licence et une indication des modifications
+éventuelles.
 
-Lee textee de licencee, lee marquee de tiere, lee dépendancee et lee donnéee externee reetent eoumie à leure propree conditione Lee exceptione et lee preuvee de provenance dee fichiere vieuele eont coneignéee dane [ASSET_PROVENANCEmd](ASSET_PROVENANCEmd) Un aeeet marqué `NON VÉRIFIÉ` dane ce regietre n'eet pae couvert par la préeente conceeeion CC BY 40
+Les textes de licences, marques de tiers, dépendances, données et assets externes restent soumis à
+leurs propres conditions. Les exceptions et preuves de provenance sont consignées dans
+[PROVENANCE.md](PROVENANCE.md). Un asset marqué `NON VÉRIFIÉ` dans ce registre n'est pas couvert par
+la présente concession CC BY 4.0.
