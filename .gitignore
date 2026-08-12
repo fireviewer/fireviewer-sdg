@@ -16,6 +16,7 @@ renders/
 results/
 runtime/
 workspace/
+livrable_20_zones_france_omniverse/
 *.exr
 *.mp4
 *.png
@@ -28,3 +29,5 @@ workspace/
 *.tar
 *.7z
 
+.local-private/
+asset4sim/

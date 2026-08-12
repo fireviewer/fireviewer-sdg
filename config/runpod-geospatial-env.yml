@@ -1,0 +1,8 @@
+name: fireviewer-geospatial
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pdal=2.10.2
+  - gdal
+  - proj

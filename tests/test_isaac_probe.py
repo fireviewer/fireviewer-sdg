@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -10,6 +11,78 @@ from fireviewer_sdg import isaac_probe
 
 
 class IsaacProbeTests(unittest.TestCase):
+    def test_rtx_rgb_requires_expected_dimensions_and_contrast(self) -> None:
+        class Rgb:
+            shape = (64, 64, 4)
+            size = 64 * 64 * 4
+
+            @staticmethod
+            def min() -> int:
+                return 3
+
+            @staticmethod
+            def max() -> int:
+                return 251
+
+        result = isaac_probe._validate_rtx_rgb(Rgb(), resolution=(64, 64))
+
+        self.assertEqual(result["resolution"], [64, 64])
+        self.assertEqual(result["minimum"], 3.0)
+        self.assertEqual(result["maximum"], 251.0)
+
+    def test_rtx_rgb_rejects_uniform_or_malformed_output(self) -> None:
+        class UniformRgb:
+            shape = (64, 64, 3)
+            size = 64 * 64 * 3
+
+            @staticmethod
+            def min() -> int:
+                return 0
+
+            @staticmethod
+            def max() -> int:
+                return 0
+
+        with self.assertRaisesRegex(RuntimeError, "uniform"):
+            isaac_probe._validate_rtx_rgb(UniformRgb(), resolution=(64, 64))
+        with self.assertRaisesRegex(RuntimeError, "shape"):
+            isaac_probe._validate_rtx_rgb(object(), resolution=(64, 64))
+
+    def test_preflight_receipt_is_confined_to_volume_root(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "workspace"
+            receipt = root / "zone-scenes" / "Z16" / "runtime-preflight.json"
+            with mock.patch.dict(
+                os.environ,
+                {
+                    "FW_SDG_VOLUME_ROOT": str(root),
+                    "FW_SDG_GPU_PREFLIGHT_RECEIPT": str(receipt),
+                },
+                clear=False,
+            ):
+                written = isaac_probe._write_preflight_receipt(
+                    {"rtx_render": {"maximum": 1.0}}
+                )
+            self.assertEqual(written, receipt.resolve())
+            self.assertEqual(
+                json.loads(receipt.read_text(encoding="utf-8")),
+                {"rtx_render": {"maximum": 1.0}},
+            )
+            with mock.patch.dict(
+                os.environ,
+                {
+                    "FW_SDG_VOLUME_ROOT": str(root),
+                    "FW_SDG_GPU_PREFLIGHT_RECEIPT": str(
+                        Path(directory) / "outside.json"
+                    ),
+                },
+                clear=False,
+            ):
+                with self.assertRaisesRegex(
+                    RuntimeError, "inside FW_SDG_VOLUME_ROOT"
+                ):
+                    isaac_probe._write_preflight_receipt({})
+
     def test_asset_lock_is_not_touched_without_catalog_preparation(self) -> None:
         with mock.patch.dict(
             os.environ,

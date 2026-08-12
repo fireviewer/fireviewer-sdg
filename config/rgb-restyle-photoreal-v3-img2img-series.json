@@ -1,0 +1,71 @@
+{
+  "schema": "fireviewer.rgb-restyle.contract.v1",
+  "extends": "rgb-restyle-photoreal-v2-validated.json",
+  "contract_id": "rgb-restyle-photoreal-v3-img2img-series",
+  "status": "locked-batch-validation",
+  "purpose": "Photorealistic image-to-image restyle of accepted positive-fire original RGB captures only, with exact scene and fire/smoke evidence conservation.",
+  "source_contract": {
+    "derived_output_relative_dir": "restyles/photoreal_v3_original_positive"
+  },
+  "engine": {
+    "minimum_version": "0.26.2",
+    "api_workflow": "workflows/rgb-photoreal-flux2-klein-4b-v3-img2img.api.json",
+    "api_workflow_sha256": "016e7787d5b0d552220e86ae863190218e7c98fd70093d379e03c97caa537639",
+    "steps": 12,
+    "required_node_classes": [
+      "UNETLoader",
+      "CLIPLoader",
+      "VAELoader",
+      "LoadImage",
+      "VAEEncode",
+      "CLIPTextEncode",
+      "ReferenceLatent",
+      "CFGGuider",
+      "RandomNoise",
+      "KSamplerSelect",
+      "Flux2Scheduler",
+      "SamplerCustomAdvanced",
+      "VAEDecode",
+      "SaveImage"
+    ]
+  },
+  "composition_lock": {
+    "minimum_output_edge_precision": 0.9,
+    "minimum_source_edge_recall": 0.95,
+    "minimum_semantic_boundary_recall": 0.92,
+    "minimum_depth_boundary_recall": 0.92,
+    "minimum_coarse_luminance_correlation": 0.93
+  },
+  "batch_selection": {
+    "capture_member": "original",
+    "sample_kind": "positive_fire",
+    "visibility_validation_status": "accepted"
+  },
+  "event_lock": {
+    "protected_pixels_exact": true,
+    "projection_mask_tolerance_px": 12.0,
+    "require_visible_flame_mask": true,
+    "require_visible_smoke_mask": false,
+    "reject_unanchored_output_edges": true
+  },
+  "prompt": {
+    "positive": "Image-to-image restyle only; do not create a new scene. Reproduce the input observation identically: the same camera pose, lens, crop, perspective, horizon, terrain silhouette, relief, roads, paths, buildings, exact tree count, tree positions, canopy silhouettes, occlusions and every visible object at the same pixel locations. Treat the wildfire evidence as immutable: preserve the exact number, centroid, footprint, apparent size, shape, intensity and visibility of every existing flame and every existing smoke region; a small or faint event must remain small or faint. Never invent, enlarge, relocate, duplicate or dramatize fire or smoke. Change only rendering style and material appearance outside that evidence: realistic bark and foliage microtexture, natural photographic illumination, atmospheric depth and physically plausible surface response. Reconstruct only the already visible ground regions as realistic irregular dirty forest ground with local soil, leaf litter, sparse grass, small stones and natural tonal variation; preserve the exact ground geometry, elevation, boundaries, roads, tracks and occlusions, and add no object. Output a restrained high-resolution documentary camera photograph of the exact registered French landscape, not an artistic interpretation.",
+    "negative": "new scene, changed composition, camera movement, changed crop, changed zoom, changed focal length, shifted horizon, altered terrain geometry, moved road, new road, moved path, new path, moved building, moved tree, added tree, removed tree, changed canopy silhouette, new object, removed object, clean flat ground, plastic ground, uniform ground plane, invented rock, invented vegetation, moved flame, added flame, removed flame, enlarged flame, duplicated flame, fire wall, prominent fire, dramatic fire, orange hotspot outside the source fire, moved smoke, added smoke, removed smoke, enlarged smoke, duplicated smoke plume, smoke outside the source plume, changed fire perimeter, people, vehicle, text, watermark, illustration, low-poly, CGI, cartoon, plastic material, oversaturated, HDR halo, cinematic restaging"
+  },
+  "zoom_series_lock": {
+    "ordered_members": ["original"],
+    "shared_style_seed": false,
+    "require_same_visible_scene": true,
+    "require_monotonic_zoom_fov": false
+  },
+  "release_gate": {
+    "batch_generation_allowed": true,
+    "training_admission_allowed": false,
+    "public_distribution_allowed": false,
+    "unlock_requires": [
+      "One accepted positive-fire original pilot with no scene or event drift",
+      "Human visual acceptance of the v3 photorealistic profile",
+      "Versioned batch validation receipt"
+    ]
+  }
+}

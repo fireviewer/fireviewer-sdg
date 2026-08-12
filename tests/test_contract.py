@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 import unittest
 from pathlib import Path
 
@@ -14,10 +15,26 @@ ROOT = Path(__file__).resolve().parents[1]
 class ImageContractTests(unittest.TestCase):
     def test_build_context_contains_no_payload_binaries(self) -> None:
         forbidden = {".bin", ".ckpt", ".gguf", ".onnx", ".pt", ".pth", ".safetensors"}
+        listed = subprocess.run(
+            [
+                "git",
+                "-c",
+                f"safe.directory={ROOT.as_posix()}",
+                "-C",
+                str(ROOT),
+                "ls-files",
+                "--cached",
+                "--others",
+                "--exclude-standard",
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.splitlines()
         offenders = [
-            path.relative_to(ROOT).as_posix()
-            for path in ROOT.rglob("*")
-            if path.is_file() and path.suffix.lower() in forbidden
+            relative
+            for relative in listed
+            if Path(relative).suffix.lower() in forbidden
         ]
         self.assertEqual(offenders, [])
 

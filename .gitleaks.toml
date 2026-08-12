@@ -1,0 +1,9 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Ignore signed workflow SHA-256 checksums"
+regexTarget = "line"
+regexes = [
+  '''"api_workflow_sha256"\s*:\s*"[0-9a-f]{64}"''',
+]

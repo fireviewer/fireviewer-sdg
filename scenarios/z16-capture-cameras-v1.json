@@ -1,0 +1,1617 @@
+{
+  "schema_version": 1,
+  "state": "Z16_CAPTURE_CAMERA_CONTRACT_PREPARED",
+  "contract_id": "Z16-CAMERA-40-V1",
+  "zone": {
+    "id": "Z16",
+    "name": "Diois et rebord sud du Vercors",
+    "main_site": "Die",
+    "bounds_epsg2154_m": {
+      "xmin": 878000,
+      "ymin": 6399000,
+      "xmax": 898000,
+      "ymax": 6419000
+    },
+    "local_bounds_m": {
+      "xmin": 0,
+      "ymin": 0,
+      "xmax": 20000,
+      "ymax": 20000
+    },
+    "origin_epsg2154_ign69_m": [
+      878000,
+      6399000,
+      0
+    ],
+    "horizontal_crs": "EPSG:2154",
+    "vertical_datum": "IGN69"
+  },
+  "source_evidence": {
+    "zone_manifest_sha256": "cf648a1c6bccc4ca282271caf3058a271f4b44a7c6d426159acb8968537cc59f",
+    "source_lock_sha256": "39d71fc46b4a85554785fba50423df8d4968920996b0a93bfffad40194dda0f3",
+    "lidar_evidence_sha256": "c10963e6da800d1575550631b70d19a1bb883e7188271ad7e8a26138648a35f1",
+    "terrain_sampling": "IGN LiDAR-HD MNT 0.50 m, nearest source pixel at each fixed XY"
+  },
+  "contract": {
+    "camera_count": 40,
+    "fixed_across_days_and_hours": true,
+    "classes": {
+      "top_down": 2,
+      "plunging_oblique": 2,
+      "satellite_high_altitude": 2,
+      "ground_observer": 12,
+      "ridge_observer": 11,
+      "airborne_oblique": 11
+    },
+    "minimum_distinct_position_m": 5,
+    "capture_resolution_px": [
+      3840,
+      2160
+    ],
+    "aim_policy": "each observation recomputes orientation only; fixed camera position and intrinsics aim at the synchronous active flame front",
+    "simulation_performed": false,
+    "remote_scene_modified": false
+  },
+  "cameras": [
+    {
+      "camera_id": "VIEW-01",
+      "view_class": "top_down",
+      "terrain_sample_local_m": [
+        10000,
+        10000,
+        411.269
+      ],
+      "terrain_clearance_m": 17588.731,
+      "pose_local": {
+        "position_m": [
+          10000,
+          10000,
+          18000
+        ],
+        "orientation_xyzw": [
+          0.014355965514,
+          -0.014361888969,
+          0.00020622131,
+          0.999793778672
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 5333.333333,
+        "fy_px": 5333.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 50,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-02",
+      "view_class": "top_down",
+      "terrain_sample_local_m": [
+        11200,
+        10800,
+        476.471
+      ],
+      "terrain_clearance_m": 19523.529,
+      "pose_local": {
+        "position_m": [
+          11200,
+          10800,
+          20000
+        ],
+        "orientation_xyzw": [
+          -0.007724982209,
+          0.018031898022,
+          0.000139322903,
+          0.99980755943
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 5333.333333,
+        "fy_px": 5333.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 50,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-03",
+      "view_class": "plunging_oblique",
+      "terrain_sample_local_m": [
+        3500,
+        9000,
+        853.093
+      ],
+      "terrain_clearance_m": 4500,
+      "pose_local": {
+        "position_m": [
+          3500,
+          9000,
+          5353.093
+        ],
+        "orientation_xyzw": [
+          0.367595506991,
+          -0.297170012271,
+          -0.554008519286,
+          0.685301457466
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 3733.333333,
+        "fy_px": 3733.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 35,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-04",
+      "view_class": "plunging_oblique",
+      "terrain_sample_local_m": [
+        16500,
+        12000,
+        1962.166
+      ],
+      "terrain_clearance_m": 4500,
+      "pose_local": {
+        "position_m": [
+          16500,
+          12000,
+          6462.166
+        ],
+        "orientation_xyzw": [
+          0.243095167392,
+          0.311350554907,
+          0.724105409783,
+          0.565364419708
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 3733.333333,
+        "fy_px": 3733.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 35,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-05",
+      "view_class": "satellite_high_altitude",
+      "terrain_sample_local_m": [
+        8000,
+        12000,
+        463.088
+      ],
+      "terrain_clearance_m": 11536.912,
+      "pose_local": {
+        "position_m": [
+          8000,
+          12000,
+          12000
+        ],
+        "orientation_xyzw": [
+          -0.061519233152,
+          0.108654677715,
+          0.863389853267,
+          -0.488843028219
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 9066.666667,
+        "fy_px": 9066.666667,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 85,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-06",
+      "view_class": "satellite_high_altitude",
+      "terrain_sample_local_m": [
+        13000,
+        9000,
+        844.131
+      ],
+      "terrain_clearance_m": 14155.869,
+      "pose_local": {
+        "position_m": [
+          13000,
+          9000,
+          15000
+        ],
+        "orientation_xyzw": [
+          0.086772549969,
+          0.049129782951,
+          0.490243191399,
+          0.865862808005
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 9066.666667,
+        "fy_px": 9066.666667,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 85,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-07",
+      "view_class": "ground_observer",
+      "terrain_sample_local_m": [
+        14982.185,
+        10855.577,
+        1030.423
+      ],
+      "terrain_clearance_m": 6,
+      "pose_local": {
+        "position_m": [
+          14982.185,
+          10855.577,
+          1036.423
+        ],
+        "orientation_xyzw": [
+          0.456055927848,
+          0.493668208609,
+          0.543905374753,
+          0.502465554838
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 1920,
+        "fy_px": 1920,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 18,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-08",
+      "view_class": "ground_observer",
+      "terrain_sample_local_m": [
+        13937.082,
+        13081.831,
+        850.386
+      ],
+      "terrain_clearance_m": 6,
+      "pose_local": {
+        "position_m": [
+          13937.082,
+          13081.831,
+          856.386
+        ],
+        "orientation_xyzw": [
+          0.306440438939,
+          0.613454372576,
+          0.651131983798,
+          0.325261632882
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 1920,
+        "fy_px": 1920,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 18,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-09",
+      "view_class": "ground_observer",
+      "terrain_sample_local_m": [
+        12750,
+        13964.102,
+        688.735
+      ],
+      "terrain_clearance_m": 6,
+      "pose_local": {
+        "position_m": [
+          12750,
+          13964.102,
+          694.735
+        ],
+        "orientation_xyzw": [
+          0.198539724615,
+          0.67016247823,
+          0.685708539602,
+          0.203145340185
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 1920,
+        "fy_px": 1920,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 18,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-10",
+      "view_class": "ground_observer",
+      "terrain_sample_local_m": [
+        10099.976,
+        14484.164,
+        514.626
+      ],
+      "terrain_clearance_m": 6,
+      "pose_local": {
+        "position_m": [
+          10099.976,
+          14484.164,
+          520.626
+        ],
+        "orientation_xyzw": [
+          -0.035713393711,
+          0.713185782887,
+          0.699188614968,
+          -0.035012473445
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 1920,
+        "fy_px": 1920,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 18,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-11",
+      "view_class": "ground_observer",
+      "terrain_sample_local_m": [
+        7595.44,
+        13555.184,
+        622.788
+      ],
+      "terrain_clearance_m": 6,
+      "pose_local": {
+        "position_m": [
+          7595.44,
+          13555.184,
+          628.788
+        ],
+        "orientation_xyzw": [
+          -0.261425831267,
+          0.654402085781,
+          0.658886288817,
+          -0.263217216918
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 1920,
+        "fy_px": 1920,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 18,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-12",
+      "view_class": "ground_observer",
+      "terrain_sample_local_m": [
+        6602.886,
+        12500,
+        526.216
+      ],
+      "terrain_clearance_m": 6,
+      "pose_local": {
+        "position_m": [
+          6602.886,
+          12500,
+          532.216
+        ],
+        "orientation_xyzw": [
+          -0.371424273324,
+          0.608095681531,
+          0.598758478034,
+          -0.365721118164
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 1920,
+        "fy_px": 1920,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 18,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-13",
+      "view_class": "ground_observer",
+      "terrain_sample_local_m": [
+        6017.815,
+        10144.423,
+        442.168
+      ],
+      "terrain_clearance_m": 6,
+      "pose_local": {
+        "position_m": [
+          6017.815,
+          10144.423,
+          448.168
+        ],
+        "orientation_xyzw": [
+          0.528086383504,
+          -0.487851802918,
+          -0.471655871917,
+          0.510554726189
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 1920,
+        "fy_px": 1920,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 18,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-14",
+      "view_class": "ground_observer",
+      "terrain_sample_local_m": [
+        7062.918,
+        7918.169,
+        879.605
+      ],
+      "terrain_clearance_m": 6,
+      "pose_local": {
+        "position_m": [
+          7062.918,
+          7918.169,
+          885.605
+        ],
+        "orientation_xyzw": [
+          0.611246735697,
+          -0.305337652417,
+          -0.326297089259,
+          0.65320483438
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 1920,
+        "fy_px": 1920,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 18,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-15",
+      "view_class": "ground_observer",
+      "terrain_sample_local_m": [
+        8250,
+        7035.898,
+        1073.622
+      ],
+      "terrain_clearance_m": 6,
+      "pose_local": {
+        "position_m": [
+          8250,
+          7035.898,
+          1079.622
+        ],
+        "orientation_xyzw": [
+          0.637684396458,
+          -0.188917894656,
+          -0.212122795965,
+          0.716011563471
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 1920,
+        "fy_px": 1920,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 18,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-16",
+      "view_class": "ground_observer",
+      "terrain_sample_local_m": [
+        10900.024,
+        6515.836,
+        454.808
+      ],
+      "terrain_clearance_m": 6,
+      "pose_local": {
+        "position_m": [
+          10900.024,
+          6515.836,
+          460.808
+        ],
+        "orientation_xyzw": [
+          0.71838441616,
+          0.03597371976,
+          0.034744946018,
+          0.693846172312
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 1920,
+        "fy_px": 1920,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 18,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-17",
+      "view_class": "ground_observer",
+      "terrain_sample_local_m": [
+        13404.56,
+        7444.816,
+        697.841
+      ],
+      "terrain_clearance_m": 6,
+      "pose_local": {
+        "position_m": [
+          13404.56,
+          7444.816,
+          703.841
+        ],
+        "orientation_xyzw": [
+          0.648512459225,
+          0.259072995676,
+          0.265533333966,
+          0.664684001383
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 1920,
+        "fy_px": 1920,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 18,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-18",
+      "view_class": "ground_observer",
+      "terrain_sample_local_m": [
+        14397.114,
+        8500,
+        629.081
+      ],
+      "terrain_clearance_m": 6,
+      "pose_local": {
+        "position_m": [
+          14397.114,
+          8500,
+          635.081
+        ],
+        "orientation_xyzw": [
+          0.601023949974,
+          0.367104866306,
+          0.370056677038,
+          0.605856653402
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 1920,
+        "fy_px": 1920,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 18,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-19",
+      "view_class": "ridge_observer",
+      "terrain_sample_local_m": [
+        17467.024,
+        11130.183,
+        1939.385
+      ],
+      "terrain_clearance_m": 80,
+      "pose_local": {
+        "position_m": [
+          17467.024,
+          11130.183,
+          2019.385
+        ],
+        "orientation_xyzw": [
+          0.426901601739,
+          0.467258625985,
+          0.571586929537,
+          0.522219092773
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 3733.333333,
+        "fy_px": 3733.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 35,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-20",
+      "view_class": "ridge_observer",
+      "terrain_sample_local_m": [
+        15547.707,
+        15003.395,
+        1422.892
+      ],
+      "terrain_clearance_m": 80,
+      "pose_local": {
+        "position_m": [
+          15547.707,
+          15003.395,
+          1502.892
+        ],
+        "orientation_xyzw": [
+          0.269280100783,
+          0.601114289344,
+          0.686677573823,
+          0.307609733393
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 3733.333333,
+        "fy_px": 3733.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 35,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-21",
+      "view_class": "ridge_observer",
+      "terrain_sample_local_m": [
+        13407.905,
+        16412.608,
+        743.354
+      ],
+      "terrain_clearance_m": 80,
+      "pose_local": {
+        "position_m": [
+          13407.905,
+          16412.608,
+          823.354
+        ],
+        "orientation_xyzw": [
+          0.157461241741,
+          0.676953961543,
+          0.700290199594,
+          0.162889311048
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 3733.333333,
+        "fy_px": 3733.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 35,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-22",
+      "view_class": "ridge_observer",
+      "terrain_sample_local_m": [
+        8836.738,
+        16813.846,
+        1046.337
+      ],
+      "terrain_clearance_m": 80,
+      "pose_local": {
+        "position_m": [
+          8836.738,
+          16813.846,
+          1126.337
+        ],
+        "orientation_xyzw": [
+          -0.087091372737,
+          0.672487418697,
+          0.728879578678,
+          -0.094394514012
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 3733.333333,
+        "fy_px": 3733.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 35,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-23",
+      "view_class": "ridge_observer",
+      "terrain_sample_local_m": [
+        4981.191,
+        14498.548,
+        698.068
+      ],
+      "terrain_clearance_m": 80,
+      "pose_local": {
+        "position_m": [
+          4981.191,
+          14498.548,
+          778.068
+        ],
+        "orientation_xyzw": [
+          -0.31720919946,
+          0.621545302501,
+          0.637997435787,
+          -0.325605639764
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 3733.333333,
+        "fy_px": 3733.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 35,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-24",
+      "view_class": "ridge_observer",
+      "terrain_sample_local_m": [
+        3783.549,
+        12331.262,
+        750.567
+      ],
+      "terrain_clearance_m": 80,
+      "pose_local": {
+        "position_m": [
+          3783.549,
+          12331.262,
+          830.567
+        ],
+        "orientation_xyzw": [
+          -0.422064844167,
+          0.552549083198,
+          0.571152312861,
+          -0.436274928787
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 3733.333333,
+        "fy_px": 3733.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 35,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-25",
+      "view_class": "ridge_observer",
+      "terrain_sample_local_m": [
+        4006.39,
+        8072.709,
+        505.991
+      ],
+      "terrain_clearance_m": 80,
+      "pose_local": {
+        "position_m": [
+          4006.39,
+          8072.709,
+          585.991
+        ],
+        "orientation_xyzw": [
+          0.581563310937,
+          -0.403478014325,
+          -0.402663494021,
+          0.580389281355
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 3733.333333,
+        "fy_px": 3733.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 35,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-26",
+      "view_class": "ridge_observer",
+      "terrain_sample_local_m": [
+        7023.11,
+        4858.5,
+        1120.232
+      ],
+      "terrain_clearance_m": 80,
+      "pose_local": {
+        "position_m": [
+          7023.11,
+          4858.5,
+          1200.232
+        ],
+        "orientation_xyzw": [
+          0.64890451983,
+          -0.183901471548,
+          -0.201311277835,
+          0.710335795469
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 3733.333333,
+        "fy_px": 3733.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 35,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-27",
+      "view_class": "ridge_observer",
+      "terrain_sample_local_m": [
+        9503.796,
+        4066.161,
+        1042.297
+      ],
+      "terrain_clearance_m": 80,
+      "pose_local": {
+        "position_m": [
+          9503.796,
+          4066.161,
+          1122.297
+        ],
+        "orientation_xyzw": [
+          0.676245521265,
+          -0.052044226268,
+          -0.056386612338,
+          0.732669054506
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 3733.333333,
+        "fy_px": 3733.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 35,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-28",
+      "view_class": "ridge_observer",
+      "terrain_sample_local_m": [
+        14011.536,
+        4877.033,
+        534.118
+      ],
+      "terrain_clearance_m": 80,
+      "pose_local": {
+        "position_m": [
+          14011.536,
+          4877.033,
+          614.118
+        ],
+        "orientation_xyzw": [
+          0.679016458491,
+          0.194606900232,
+          0.195021778676,
+          0.680464039699
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 3733.333333,
+        "fy_px": 3733.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 35,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-29",
+      "view_class": "ridge_observer",
+      "terrain_sample_local_m": [
+        17008.435,
+        8107.19,
+        1840.659
+      ],
+      "terrain_clearance_m": 80,
+      "pose_local": {
+        "position_m": [
+          17008.435,
+          8107.19,
+          1920.659
+        ],
+        "orientation_xyzw": [
+          0.522833436482,
+          0.364829805221,
+          0.440869821393,
+          0.631805517152
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 3733.333333,
+        "fy_px": 3733.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 35,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-30",
+      "view_class": "airborne_oblique",
+      "terrain_sample_local_m": [
+        18300,
+        10500,
+        1314.05
+      ],
+      "terrain_clearance_m": 1200,
+      "pose_local": {
+        "position_m": [
+          18300,
+          10500,
+          2514.05
+        ],
+        "orientation_xyzw": [
+          0.436371267224,
+          0.436371267224,
+          0.556399242578,
+          0.556399242578
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 5333.333333,
+        "fy_px": 5333.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 50,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-31",
+      "view_class": "airborne_oblique",
+      "terrain_sample_local_m": [
+        16622.023,
+        15085.443,
+        1787.821
+      ],
+      "terrain_clearance_m": 1200,
+      "pose_local": {
+        "position_m": [
+          16622.023,
+          15085.443,
+          2987.821
+        ],
+        "orientation_xyzw": [
+          0.265121938406,
+          0.529823058751,
+          0.720439686986,
+          0.360505952249
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 5333.333333,
+        "fy_px": 5333.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 50,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-32",
+      "view_class": "airborne_oblique",
+      "terrain_sample_local_m": [
+        12310.041,
+        17697.997,
+        1009.29
+      ],
+      "terrain_clearance_m": 1200,
+      "pose_local": {
+        "position_m": [
+          12310.041,
+          17697.997,
+          2209.29
+        ],
+        "orientation_xyzw": [
+          0.077127786328,
+          0.622977540539,
+          0.772530049232,
+          0.095643147131
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 5333.333333,
+        "fy_px": 5333.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 50,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-33",
+      "view_class": "airborne_oblique",
+      "terrain_sample_local_m": [
+        9389.944,
+        17824.679,
+        1521.33
+      ],
+      "terrain_clearance_m": 1200,
+      "pose_local": {
+        "position_m": [
+          9389.944,
+          17824.679,
+          2721.33
+        ],
+        "orientation_xyzw": [
+          -0.045226647683,
+          0.600261587424,
+          0.796267051849,
+          -0.059994659279
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 5333.333333,
+        "fy_px": 5333.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 50,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-34",
+      "view_class": "airborne_oblique",
+      "terrain_sample_local_m": [
+        4844.636,
+        15596.378,
+        649.687
+      ],
+      "terrain_clearance_m": 1200,
+      "pose_local": {
+        "position_m": [
+          4844.636,
+          15596.378,
+          1849.687
+        ],
+        "orientation_xyzw": [
+          -0.263160572065,
+          0.591399643181,
+          0.696395324902,
+          -0.309881472195
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 5333.333333,
+        "fy_px": 5333.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 50,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-35",
+      "view_class": "airborne_oblique",
+      "terrain_sample_local_m": [
+        2732.552,
+        11175.358,
+        400.552
+      ],
+      "terrain_clearance_m": 1200,
+      "pose_local": {
+        "position_m": [
+          2732.552,
+          11175.358,
+          1600.552
+        ],
+        "orientation_xyzw": [
+          0.446407773735,
+          -0.48690589194,
+          -0.553383105376,
+          0.507355783083
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 5333.333333,
+        "fy_px": 5333.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 50,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-36",
+      "view_class": "airborne_oblique",
+      "terrain_sample_local_m": [
+        3015.955,
+        8415.179,
+        659.022
+      ],
+      "terrain_clearance_m": 1200,
+      "pose_local": {
+        "position_m": [
+          3015.955,
+          8415.179,
+          1859.022
+        ],
+        "orientation_xyzw": [
+          0.516103891956,
+          -0.391984344169,
+          -0.460622071139,
+          0.606475353345
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 5333.333333,
+        "fy_px": 5333.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 50,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-37",
+      "view_class": "airborne_oblique",
+      "terrain_sample_local_m": [
+        5987.662,
+        4463.976,
+        1024.818
+      ],
+      "terrain_clearance_m": 1200,
+      "pose_local": {
+        "position_m": [
+          5987.662,
+          4463.976,
+          2224.818
+        ],
+        "orientation_xyzw": [
+          0.596106660251,
+          -0.198186278202,
+          -0.245469312201,
+          0.738325040551
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 5333.333333,
+        "fy_px": 5333.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 50,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-38",
+      "view_class": "airborne_oblique",
+      "terrain_sample_local_m": [
+        10900.805,
+        3109.776,
+        514.687
+      ],
+      "terrain_clearance_m": 1200,
+      "pose_local": {
+        "position_m": [
+          10900.805,
+          3109.776,
+          1714.687
+        ],
+        "orientation_xyzw": [
+          0.652090461695,
+          0.017669911567,
+          0.020530486178,
+          0.757657114484
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 5333.333333,
+        "fy_px": 5333.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 50,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-39",
+      "view_class": "airborne_oblique",
+      "terrain_sample_local_m": [
+        13740.237,
+        3768.723,
+        494.809
+      ],
+      "terrain_clearance_m": 1200,
+      "pose_local": {
+        "position_m": [
+          13740.237,
+          3768.723,
+          1694.809
+        ],
+        "orientation_xyzw": [
+          0.637453514692,
+          0.145438992272,
+          0.168306543353,
+          0.737681112404
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 5333.333333,
+        "fy_px": 5333.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 50,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    },
+    {
+      "camera_id": "VIEW-40",
+      "view_class": "airborne_oblique",
+      "terrain_sample_local_m": [
+        17439.709,
+        7121.653,
+        1392.186
+      ],
+      "terrain_clearance_m": 1200,
+      "pose_local": {
+        "position_m": [
+          17439.709,
+          7121.653,
+          2592.186
+        ],
+        "orientation_xyzw": [
+          0.519228513027,
+          0.32471803748,
+          0.419173366524,
+          0.670263855651
+        ]
+      },
+      "orientation_policy": "per_observation_openusd_minus_z_look_at_active_flame_front",
+      "intrinsics": {
+        "model": "pinhole",
+        "width_px": 3840,
+        "height_px": 2160,
+        "fx_px": 5333.333333,
+        "fy_px": 5333.333333,
+        "cx_px": 1920,
+        "cy_px": 1080,
+        "near_clip_m": 0.5,
+        "far_clip_m": 50000,
+        "focal_length_mm": 50,
+        "horizontal_aperture_mm": 36,
+        "vertical_aperture_mm": 20.25,
+        "f_stop": 8
+      }
+    }
+  ]
+}

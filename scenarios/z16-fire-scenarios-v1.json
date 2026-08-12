@@ -1,0 +1,2447 @@
+{
+  "schema_version": 1,
+  "state": "Z16_FIRE_SCENARIOS_PREPARED_PRE_ACCEPTANCE",
+  "contract_id": "Z16-FIRE-SCENARIOS-3-V1",
+  "zone_id": "Z16",
+  "camera_contract_id": "Z16-CAMERA-40-V1",
+  "response_deployment_contract_id": "Z16-RESPONSE-DEPLOYMENTS-3-V1",
+  "execution_gate": {
+    "required_state": "FIRE_SIMULATION_ALLOWED",
+    "human_editor_acceptance_scene": "SIM-01",
+    "simulation_performed": false,
+    "render_performed": false,
+    "remote_scene_modified": false
+  },
+  "temporal_contract": {
+    "scenario_count": 3,
+    "durations_days": [
+      4,
+      8,
+      12
+    ],
+    "capture_hours": [
+      "08:00",
+      "14:00",
+      "20:00"
+    ],
+    "fixed_camera_positions_and_intrinsics": true,
+    "orientation_tracks_synchronous_active_flame_front": true
+  },
+  "scenarios": [
+    {
+      "scenario_id": "Z16-VALLEY-WIND-04D-V1",
+      "name": "Valley wind driven",
+      "duration_days": 4,
+      "camera_contract_id": "Z16-CAMERA-40-V1",
+      "capture_hours": [
+        "08:00",
+        "14:00",
+        "20:00"
+      ],
+      "observation_count": 480,
+      "image_modalities": [
+        "normal_rgb",
+        "negative",
+        "thermal_hotspot"
+      ],
+      "intended_binding": "candidate Z16 fictive variant after SIM-01 human Editor acceptance",
+      "simulation_performed": false,
+      "days": [
+        {
+          "day_index": 1,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 28800,
+                "active_area_m2": 9015.51,
+                "active_flame_centroid_local_m": [
+                  9800,
+                  9800,
+                  420.804
+                ],
+                "active_flame_front_radius_m": 111.667,
+                "burned_area_m2": 117084.548,
+                "fire_front_length_m": 827.33,
+                "max_flame_height_m": 7.486,
+                "smoke_column_height_m": 561.667
+              },
+              "weather": {
+                "air_temperature_c": 20.167,
+                "relative_humidity_percent": 50.583,
+                "wind_speed_m_s": 3.54,
+                "wind_direction_degrees": 79.659,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.313,
+                "pressure_hpa": 1013.75
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 415.804
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 50400,
+                "active_area_m2": 17872.172,
+                "active_flame_centroid_local_m": [
+                  9960.782,
+                  9934.067,
+                  414.294
+                ],
+                "active_flame_front_radius_m": 133.333,
+                "burned_area_m2": 267480.285,
+                "fire_front_length_m": 1012.291,
+                "max_flame_height_m": 11.599,
+                "smoke_column_height_m": 983.333
+              },
+              "weather": {
+                "air_temperature_c": 29.333,
+                "relative_humidity_percent": 33.167,
+                "wind_speed_m_s": 4.554,
+                "wind_direction_degrees": 84,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.2,
+                "pressure_hpa": 1013.5
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 409.294
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 72000,
+                "active_area_m2": 24152.564,
+                "active_flame_centroid_local_m": [
+                  10162.738,
+                  10085.622,
+                  416.864
+                ],
+                "active_flame_front_radius_m": 155,
+                "burned_area_m2": 447822.684,
+                "fire_front_length_m": 1205.193,
+                "max_flame_height_m": 8.945,
+                "smoke_column_height_m": 932.5
+              },
+              "weather": {
+                "air_temperature_c": 24.5,
+                "relative_humidity_percent": 42.75,
+                "wind_speed_m_s": 4.05,
+                "wind_direction_degrees": 87.728,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.308,
+                "pressure_hpa": 1013.25
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 411.864
+              }
+            }
+          ]
+        },
+        {
+          "day_index": 2,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 115200,
+                "active_area_m2": 31376.831,
+                "active_flame_centroid_local_m": [
+                  10346.391,
+                  10165.374,
+                  430.556
+                ],
+                "active_flame_front_radius_m": 176.667,
+                "burned_area_m2": 650857.255,
+                "fire_front_length_m": 1406.037,
+                "max_flame_height_m": 7.795,
+                "smoke_column_height_m": 986.667
+              },
+              "weather": {
+                "air_temperature_c": 20.667,
+                "relative_humidity_percent": 49.333,
+                "wind_speed_m_s": 3.883,
+                "wind_direction_degrees": 90.588,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.368,
+                "pressure_hpa": 1013
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 425.556
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 136800,
+                "active_area_m2": 39544.972,
+                "active_flame_centroid_local_m": [
+                  10460.331,
+                  10158.996,
+                  434.618
+                ],
+                "active_flame_front_radius_m": 198.333,
+                "burned_area_m2": 872628.057,
+                "fire_front_length_m": 1614.822,
+                "max_flame_height_m": 11.908,
+                "smoke_column_height_m": 1408.333
+              },
+              "weather": {
+                "air_temperature_c": 29.833,
+                "relative_humidity_percent": 31.917,
+                "wind_speed_m_s": 4.898,
+                "wind_direction_degrees": 92.387,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.255,
+                "pressure_hpa": 1012.75
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 429.618
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 158400,
+                "active_area_m2": 48656.987,
+                "active_flame_centroid_local_m": [
+                  10497.714,
+                  10155.94,
+                  435.289
+                ],
+                "active_flame_front_radius_m": 220,
+                "burned_area_m2": 1110571.896,
+                "fire_front_length_m": 1831.549,
+                "max_flame_height_m": 9.254,
+                "smoke_column_height_m": 1357.5
+              },
+              "weather": {
+                "air_temperature_c": 25,
+                "relative_humidity_percent": 41.5,
+                "wind_speed_m_s": 4.394,
+                "wind_direction_degrees": 93,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.348,
+                "pressure_hpa": 1012.5
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 430.289
+              }
+            }
+          ]
+        },
+        {
+          "day_index": 3,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 201600,
+                "active_area_m2": 58712.876,
+                "active_flame_centroid_local_m": [
+                  10502.286,
+                  10255.94,
+                  436.031
+                ],
+                "active_flame_front_radius_m": 241.667,
+                "burned_area_m2": 1362865.35,
+                "fire_front_length_m": 2056.216,
+                "max_flame_height_m": 8.104,
+                "smoke_column_height_m": 1411.667
+              },
+              "weather": {
+                "air_temperature_c": 21.167,
+                "relative_humidity_percent": 48.083,
+                "wind_speed_m_s": 4.227,
+                "wind_direction_degrees": 92.387,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.383,
+                "pressure_hpa": 1012.25
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 431.031
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 223200,
+                "active_area_m2": 69712.639,
+                "active_flame_centroid_local_m": [
+                  10539.669,
+                  10458.996,
+                  430.741
+                ],
+                "active_flame_front_radius_m": 263.333,
+                "burned_area_m2": 1628131.638,
+                "fire_front_length_m": 2288.825,
+                "max_flame_height_m": 12.218,
+                "smoke_column_height_m": 1833.333
+              },
+              "weather": {
+                "air_temperature_c": 30.333,
+                "relative_humidity_percent": 30.667,
+                "wind_speed_m_s": 5.242,
+                "wind_direction_degrees": 90.588,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.24,
+                "pressure_hpa": 1012
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 425.741
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 244800,
+                "active_area_m2": 81656.276,
+                "active_flame_centroid_local_m": [
+                  10653.609,
+                  10665.374,
+                  435.799
+                ],
+                "active_flame_front_radius_m": 285,
+                "burned_area_m2": 1905287.124,
+                "fire_front_length_m": 2529.375,
+                "max_flame_height_m": 9.564,
+                "smoke_column_height_m": 1782.5
+              },
+              "weather": {
+                "air_temperature_c": 25.5,
+                "relative_humidity_percent": 40.25,
+                "wind_speed_m_s": 4.738,
+                "wind_direction_degrees": 87.728,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.308,
+                "pressure_hpa": 1011.75
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 430.799
+              }
+            }
+          ]
+        },
+        {
+          "day_index": 4,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 288000,
+                "active_area_m2": 94543.787,
+                "active_flame_centroid_local_m": [
+                  10837.262,
+                  10785.622,
+                  449.163
+                ],
+                "active_flame_front_radius_m": 306.667,
+                "burned_area_m2": 2193452.302,
+                "fire_front_length_m": 2777.866,
+                "max_flame_height_m": 8.414,
+                "smoke_column_height_m": 1836.667
+              },
+              "weather": {
+                "air_temperature_c": 21.667,
+                "relative_humidity_percent": 46.833,
+                "wind_speed_m_s": 4.571,
+                "wind_direction_degrees": 84,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.328,
+                "pressure_hpa": 1011.5
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 444.163
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 309600,
+                "active_area_m2": 108375.173,
+                "active_flame_centroid_local_m": [
+                  11039.218,
+                  10834.067,
+                  463.153
+                ],
+                "active_flame_front_radius_m": 328.333,
+                "burned_area_m2": 2491896.25,
+                "fire_front_length_m": 3034.299,
+                "max_flame_height_m": 12.527,
+                "smoke_column_height_m": 2258.333
+              },
+              "weather": {
+                "air_temperature_c": 30.833,
+                "relative_humidity_percent": 29.417,
+                "wind_speed_m_s": 5.585,
+                "wind_direction_degrees": 79.659,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.185,
+                "pressure_hpa": 1011.25
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 458.153
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 331200,
+                "active_area_m2": 123150.432,
+                "active_flame_centroid_local_m": [
+                  11200,
+                  10900,
+                  486.968
+                ],
+                "active_flame_front_radius_m": 350,
+                "burned_area_m2": 2800000,
+                "fire_front_length_m": 3298.672,
+                "max_flame_height_m": 9.873,
+                "smoke_column_height_m": 2207.5
+              },
+              "weather": {
+                "air_temperature_c": 26,
+                "relative_humidity_percent": 39,
+                "wind_speed_m_s": 5.081,
+                "wind_direction_degrees": 75,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.268,
+                "pressure_hpa": 1011
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 481.968
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "scenario_id": "Z16-SLOPE-CONVECTION-08D-V1",
+      "name": "Slope convection",
+      "duration_days": 8,
+      "camera_contract_id": "Z16-CAMERA-40-V1",
+      "capture_hours": [
+        "08:00",
+        "14:00",
+        "20:00"
+      ],
+      "observation_count": 960,
+      "image_modalities": [
+        "normal_rgb",
+        "negative",
+        "thermal_hotspot"
+      ],
+      "intended_binding": "candidate Z16 fictive variant after SIM-01 human Editor acceptance",
+      "simulation_performed": false,
+      "days": [
+        {
+          "day_index": 1,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 28800,
+                "active_area_m2": 9201.52,
+                "active_flame_centroid_local_m": [
+                  8600,
+                  10800,
+                  402.101
+                ],
+                "active_flame_front_radius_m": 135.833,
+                "burned_area_m2": 119500.266,
+                "fire_front_length_m": 993.932,
+                "max_flame_height_m": 7.045,
+                "smoke_column_height_m": 490.833
+              },
+              "weather": {
+                "air_temperature_c": 22.083,
+                "relative_humidity_percent": 42.792,
+                "wind_speed_m_s": 3.05,
+                "wind_direction_degrees": 158.623,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.309,
+                "pressure_hpa": 1008.875
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 397.101
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 50400,
+                "active_area_m2": 23124.914,
+                "active_flame_centroid_local_m": [
+                  8755.908,
+                  10904.332,
+                  404.451
+                ],
+                "active_flame_front_radius_m": 151.667,
+                "burned_area_m2": 291842.737,
+                "fire_front_length_m": 1123.687,
+                "max_flame_height_m": 11.313,
+                "smoke_column_height_m": 841.667
+              },
+              "weather": {
+                "air_temperature_c": 31.167,
+                "relative_humidity_percent": 25.583,
+                "wind_speed_m_s": 4.237,
+                "wind_direction_degrees": 162,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.185,
+                "pressure_hpa": 1008.75
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 399.451
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 72000,
+                "active_area_m2": 28205.219,
+                "active_flame_centroid_local_m": [
+                  8926.492,
+                  11022.853,
+                  412.794
+                ],
+                "active_flame_front_radius_m": 167.5,
+                "burned_area_m2": 509384.331,
+                "fire_front_length_m": 1256.343,
+                "max_flame_height_m": 8.487,
+                "smoke_column_height_m": 720
+              },
+              "weather": {
+                "air_temperature_c": 26.25,
+                "relative_humidity_percent": 35.375,
+                "wind_speed_m_s": 3.541,
+                "wind_direction_degrees": 164.899,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.28,
+                "pressure_hpa": 1008.625
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 407.794
+              }
+            }
+          ]
+        },
+        {
+          "day_index": 2,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 115200,
+                "active_area_m2": 33789.574,
+                "active_flame_centroid_local_m": [
+                  9107.535,
+                  11147.02,
+                  423.092
+                ],
+                "active_flame_front_radius_m": 183.333,
+                "burned_area_m2": 762696.245,
+                "fire_front_length_m": 1391.9,
+                "max_flame_height_m": 7.237,
+                "smoke_column_height_m": 703.333
+              },
+              "weather": {
+                "air_temperature_c": 22.333,
+                "relative_humidity_percent": 42.167,
+                "wind_speed_m_s": 3.263,
+                "wind_direction_degrees": 167.124,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.328,
+                "pressure_hpa": 1008.5
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 418.092
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 136800,
+                "active_area_m2": 39877.981,
+                "active_flame_centroid_local_m": [
+                  9292.797,
+                  11265.548,
+                  423.493
+                ],
+                "active_flame_front_radius_m": 199.167,
+                "burned_area_m2": 1046433.333,
+                "fire_front_length_m": 1530.359,
+                "max_flame_height_m": 11.505,
+                "smoke_column_height_m": 1054.167
+              },
+              "weather": {
+                "air_temperature_c": 31.417,
+                "relative_humidity_percent": 24.958,
+                "wind_speed_m_s": 4.45,
+                "wind_direction_degrees": 168.523,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.21,
+                "pressure_hpa": 1008.375
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 418.493
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 158400,
+                "active_area_m2": 46470.439,
+                "active_flame_centroid_local_m": [
+                  9475.066,
+                  11367.914,
+                  432.938
+                ],
+                "active_flame_front_radius_m": 215,
+                "burned_area_m2": 1357037.395,
+                "fire_front_length_m": 1671.72,
+                "max_flame_height_m": 8.679,
+                "smoke_column_height_m": 932.5
+              },
+              "weather": {
+                "air_temperature_c": 26.5,
+                "relative_humidity_percent": 34.75,
+                "wind_speed_m_s": 3.754,
+                "wind_direction_degrees": 169,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.308,
+                "pressure_hpa": 1008.25
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 427.938
+              }
+            }
+          ]
+        },
+        {
+          "day_index": 3,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 201600,
+                "active_area_m2": 53566.947,
+                "active_flame_centroid_local_m": [
+                  9647.366,
+                  11447.709,
+                  438.006
+                ],
+                "active_flame_front_radius_m": 230.833,
+                "burned_area_m2": 1691923.487,
+                "fire_front_length_m": 1815.982,
+                "max_flame_height_m": 7.429,
+                "smoke_column_height_m": 915.833
+              },
+              "weather": {
+                "air_temperature_c": 22.583,
+                "relative_humidity_percent": 41.542,
+                "wind_speed_m_s": 3.476,
+                "wind_direction_degrees": 168.523,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.358,
+                "pressure_hpa": 1008.125
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 433.006
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 223200,
+                "active_area_m2": 61167.507,
+                "active_flame_centroid_local_m": [
+                  9804.138,
+                  11504.832,
+                  446.19
+                ],
+                "active_flame_front_radius_m": 246.667,
+                "burned_area_m2": 2049105.939,
+                "fire_front_length_m": 1963.146,
+                "max_flame_height_m": 11.697,
+                "smoke_column_height_m": 1266.667
+              },
+              "weather": {
+                "air_temperature_c": 31.667,
+                "relative_humidity_percent": 24.333,
+                "wind_speed_m_s": 4.663,
+                "wind_direction_degrees": 167.124,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.24,
+                "pressure_hpa": 1008
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 441.19
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 244800,
+                "active_area_m2": 69272.118,
+                "active_flame_centroid_local_m": [
+                  9942.191,
+                  11545.873,
+                  451.911
+                ],
+                "active_flame_front_radius_m": 262.5,
+                "burned_area_m2": 2426998.832,
+                "fire_front_length_m": 2113.212,
+                "max_flame_height_m": 8.87,
+                "smoke_column_height_m": 1145
+              },
+              "weather": {
+                "air_temperature_c": 26.75,
+                "relative_humidity_percent": 34.125,
+                "wind_speed_m_s": 3.967,
+                "wind_direction_degrees": 164.899,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.336,
+                "pressure_hpa": 1007.875
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 446.911
+              }
+            }
+          ]
+        },
+        {
+          "day_index": 4,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 288000,
+                "active_area_m2": 77880.78,
+                "active_flame_centroid_local_m": [
+                  10061.258,
+                  11582.536,
+                  459.568
+                ],
+                "active_flame_front_radius_m": 278.333,
+                "burned_area_m2": 2824298.507,
+                "fire_front_length_m": 2266.179,
+                "max_flame_height_m": 7.62,
+                "smoke_column_height_m": 1128.333
+              },
+              "weather": {
+                "air_temperature_c": 22.833,
+                "relative_humidity_percent": 40.917,
+                "wind_speed_m_s": 3.689,
+                "wind_direction_degrees": 162,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.383,
+                "pressure_hpa": 1007.75
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 454.568
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 309600,
+                "active_area_m2": 86993.493,
+                "active_flame_centroid_local_m": [
+                  10164.076,
+                  11628.541,
+                  466.563
+                ],
+                "active_flame_front_radius_m": 294.167,
+                "burned_area_m2": 3239909.269,
+                "fire_front_length_m": 2422.048,
+                "max_flame_height_m": 11.889,
+                "smoke_column_height_m": 1479.167
+              },
+              "weather": {
+                "air_temperature_c": 31.917,
+                "relative_humidity_percent": 23.708,
+                "wind_speed_m_s": 4.876,
+                "wind_direction_degrees": 158.623,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.259,
+                "pressure_hpa": 1007.625
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 461.563
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 331200,
+                "active_area_m2": 96610.257,
+                "active_flame_centroid_local_m": [
+                  10255.974,
+                  11695.886,
+                  473.965
+                ],
+                "active_flame_front_radius_m": 310,
+                "burned_area_m2": 3672893.811,
+                "fire_front_length_m": 2580.818,
+                "max_flame_height_m": 9.062,
+                "smoke_column_height_m": 1357.5
+              },
+              "weather": {
+                "air_temperature_c": 27,
+                "relative_humidity_percent": 33.5,
+                "wind_speed_m_s": 4.18,
+                "wind_direction_degrees": 155,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.348,
+                "pressure_hpa": 1007.5
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 468.965
+              }
+            }
+          ]
+        },
+        {
+          "day_index": 5,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 374400,
+                "active_area_m2": 106731.073,
+                "active_flame_centroid_local_m": [
+                  10344.026,
+                  11791.538,
+                  481.649
+                ],
+                "active_flame_front_radius_m": 325.833,
+                "burned_area_m2": 4122438.712,
+                "fire_front_length_m": 2742.49,
+                "max_flame_height_m": 7.812,
+                "smoke_column_height_m": 1340.833
+              },
+              "weather": {
+                "air_temperature_c": 23.083,
+                "relative_humidity_percent": 40.292,
+                "wind_speed_m_s": 3.903,
+                "wind_direction_degrees": 151.377,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.387,
+                "pressure_hpa": 1007.375
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 476.649
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 396000,
+                "active_area_m2": 117355.939,
+                "active_flame_centroid_local_m": [
+                  10435.924,
+                  11915.497,
+                  492.361
+                ],
+                "active_flame_front_radius_m": 341.667,
+                "burned_area_m2": 4587829.58,
+                "fire_front_length_m": 2907.064,
+                "max_flame_height_m": 12.081,
+                "smoke_column_height_m": 1691.667
+              },
+              "weather": {
+                "air_temperature_c": 32.167,
+                "relative_humidity_percent": 23.083,
+                "wind_speed_m_s": 5.09,
+                "wind_direction_degrees": 148,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.255,
+                "pressure_hpa": 1007.25
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 487.361
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 417600,
+                "active_area_m2": 128484.856,
+                "active_flame_centroid_local_m": [
+                  10538.742,
+                  12060.797,
+                  512.659
+                ],
+                "active_flame_front_radius_m": 357.5,
+                "burned_area_m2": 5068432.646,
+                "fire_front_length_m": 3074.539,
+                "max_flame_height_m": 9.254,
+                "smoke_column_height_m": 1570
+              },
+              "weather": {
+                "air_temperature_c": 27.25,
+                "relative_humidity_percent": 32.875,
+                "wind_speed_m_s": 4.393,
+                "wind_direction_degrees": 145.101,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.336,
+                "pressure_hpa": 1007.125
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 507.659
+              }
+            }
+          ]
+        },
+        {
+          "day_index": 6,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 460800,
+                "active_area_m2": 140117.825,
+                "active_flame_centroid_local_m": [
+                  10657.809,
+                  12215.439,
+                  558.907
+                ],
+                "active_flame_front_radius_m": 373.333,
+                "burned_area_m2": 5563680.795,
+                "fire_front_length_m": 3244.916,
+                "max_flame_height_m": 8.004,
+                "smoke_column_height_m": 1553.333
+              },
+              "weather": {
+                "air_temperature_c": 23.333,
+                "relative_humidity_percent": 39.667,
+                "wind_speed_m_s": 4.116,
+                "wind_direction_degrees": 142.876,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.368,
+                "pressure_hpa": 1007
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 553.907
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 482400,
+                "active_area_m2": 152254.844,
+                "active_flame_centroid_local_m": [
+                  10795.862,
+                  12365.701,
+                  603.455
+                ],
+                "active_flame_front_radius_m": 389.167,
+                "burned_area_m2": 6073062.76,
+                "fire_front_length_m": 3418.195,
+                "max_flame_height_m": 12.272,
+                "smoke_column_height_m": 1904.167
+              },
+              "weather": {
+                "air_temperature_c": 32.417,
+                "relative_humidity_percent": 22.458,
+                "wind_speed_m_s": 5.303,
+                "wind_direction_degrees": 141.477,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.23,
+                "pressure_hpa": 1006.875
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 598.455
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 504000,
+                "active_area_m2": 164895.915,
+                "active_flame_centroid_local_m": [
+                  10952.634,
+                  12499.882,
+                  633.774
+                ],
+                "active_flame_front_radius_m": 405,
+                "burned_area_m2": 6596114.604,
+                "fire_front_length_m": 3594.375,
+                "max_flame_height_m": 9.446,
+                "smoke_column_height_m": 1782.5
+              },
+              "weather": {
+                "air_temperature_c": 27.5,
+                "relative_humidity_percent": 32.25,
+                "wind_speed_m_s": 4.607,
+                "wind_direction_degrees": 141,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.308,
+                "pressure_hpa": 1006.75
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 628.774
+              }
+            }
+          ]
+        },
+        {
+          "day_index": 7,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 547200,
+                "active_area_m2": 178041.037,
+                "active_flame_centroid_local_m": [
+                  11124.934,
+                  12611.393,
+                  661.204
+                ],
+                "active_flame_front_radius_m": 420.833,
+                "burned_area_m2": 7132412.92,
+                "fire_front_length_m": 3773.456,
+                "max_flame_height_m": 8.196,
+                "smoke_column_height_m": 1765.833
+              },
+              "weather": {
+                "air_temperature_c": 23.583,
+                "relative_humidity_percent": 39.042,
+                "wind_speed_m_s": 4.329,
+                "wind_direction_degrees": 141.477,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.338,
+                "pressure_hpa": 1006.625
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 656.204
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 568800,
+                "active_area_m2": 191690.21,
+                "active_flame_centroid_local_m": [
+                  11307.203,
+                  12700.331,
+                  672.053
+                ],
+                "active_flame_front_radius_m": 436.667,
+                "burned_area_m2": 7681569.306,
+                "fire_front_length_m": 3955.44,
+                "max_flame_height_m": 12.464,
+                "smoke_column_height_m": 2116.667
+              },
+              "weather": {
+                "air_temperature_c": 32.667,
+                "relative_humidity_percent": 21.833,
+                "wind_speed_m_s": 5.516,
+                "wind_direction_degrees": 142.876,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.2,
+                "pressure_hpa": 1006.5
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 667.053
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 590400,
+                "active_area_m2": 205843.434,
+                "active_flame_centroid_local_m": [
+                  11492.465,
+                  12773.107,
+                  703.392
+                ],
+                "active_flame_front_radius_m": 452.5,
+                "burned_area_m2": 8243225.848,
+                "fire_front_length_m": 4140.325,
+                "max_flame_height_m": 9.638,
+                "smoke_column_height_m": 1995
+              },
+              "weather": {
+                "air_temperature_c": 27.75,
+                "relative_humidity_percent": 31.625,
+                "wind_speed_m_s": 4.82,
+                "wind_direction_degrees": 145.101,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.28,
+                "pressure_hpa": 1006.375
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 698.392
+              }
+            }
+          ]
+        },
+        {
+          "day_index": 8,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 633600,
+                "active_area_m2": 220500.709,
+                "active_flame_centroid_local_m": [
+                  11673.508,
+                  12840.244,
+                  763.538
+                ],
+                "active_flame_front_radius_m": 468.333,
+                "burned_area_m2": 8817051.37,
+                "fire_front_length_m": 4328.111,
+                "max_flame_height_m": 8.388,
+                "smoke_column_height_m": 1978.333
+              },
+              "weather": {
+                "air_temperature_c": 23.833,
+                "relative_humidity_percent": 38.417,
+                "wind_speed_m_s": 4.542,
+                "wind_direction_degrees": 148,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.313,
+                "pressure_hpa": 1006.25
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 758.538
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 655200,
+                "active_area_m2": 235662.035,
+                "active_flame_centroid_local_m": [
+                  11844.092,
+                  12913.028,
+                  782.657
+                ],
+                "active_flame_front_radius_m": 484.167,
+                "burned_area_m2": 9402738.294,
+                "fire_front_length_m": 4518.799,
+                "max_flame_height_m": 12.656,
+                "smoke_column_height_m": 2329.167
+              },
+              "weather": {
+                "air_temperature_c": 32.917,
+                "relative_humidity_percent": 21.208,
+                "wind_speed_m_s": 5.729,
+                "wind_direction_degrees": 151.377,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.181,
+                "pressure_hpa": 1006.125
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 777.657
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 676800,
+                "active_area_m2": 251327.412,
+                "active_flame_centroid_local_m": [
+                  12000,
+                  13000,
+                  731.938
+                ],
+                "active_flame_front_radius_m": 500,
+                "burned_area_m2": 10000000,
+                "fire_front_length_m": 4712.389,
+                "max_flame_height_m": 9.829,
+                "smoke_column_height_m": 2207.5
+              },
+              "weather": {
+                "air_temperature_c": 28,
+                "relative_humidity_percent": 31,
+                "wind_speed_m_s": 5.033,
+                "wind_direction_degrees": 155,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.268,
+                "pressure_hpa": 1006
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 726.938
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "scenario_id": "Z16-WIND-SHIFT-12D-V1",
+      "name": "Synoptic wind shift mosaic",
+      "duration_days": 12,
+      "camera_contract_id": "Z16-CAMERA-40-V1",
+      "capture_hours": [
+        "08:00",
+        "14:00",
+        "20:00"
+      ],
+      "observation_count": 1440,
+      "image_modalities": [
+        "normal_rgb",
+        "negative",
+        "thermal_hotspot"
+      ],
+      "intended_binding": "candidate Z16 fictive variant after SIM-01 human Editor acceptance",
+      "simulation_performed": false,
+      "days": [
+        {
+          "day_index": 1,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 28800,
+                "active_area_m2": 14664.633,
+                "active_flame_centroid_local_m": [
+                  12000,
+                  8500,
+                  524.55
+                ],
+                "active_flame_front_radius_m": 162.5,
+                "burned_area_m2": 190449.777,
+                "fire_front_length_m": 1184.097,
+                "max_flame_height_m": 8.279,
+                "smoke_column_height_m": 467.222
+              },
+              "weather": {
+                "air_temperature_c": 23.056,
+                "relative_humidity_percent": 38.861,
+                "wind_speed_m_s": 4.421,
+                "wind_direction_degrees": 47.042,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.309,
+                "pressure_hpa": 1005.917
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 519.55
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 50400,
+                "active_area_m2": 30787.608,
+                "active_flame_centroid_local_m": [
+                  11906.378,
+                  8618.101,
+                  534.704
+                ],
+                "active_flame_front_radius_m": 175,
+                "burned_area_m2": 439696.58,
+                "fire_front_length_m": 1285.871,
+                "max_flame_height_m": 12.83,
+                "smoke_column_height_m": 794.444
+              },
+              "weather": {
+                "air_temperature_c": 32.111,
+                "relative_humidity_percent": 21.722,
+                "wind_speed_m_s": 5.922,
+                "wind_direction_degrees": 49.085,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.182,
+                "pressure_hpa": 1005.833
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 529.704
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 72000,
+                "active_area_m2": 35342.917,
+                "active_flame_centroid_local_m": [
+                  11819.517,
+                  8743.225,
+                  515.386
+                ],
+                "active_flame_front_radius_m": 187.5,
+                "burned_area_m2": 730974.57,
+                "fire_front_length_m": 1389.173,
+                "max_flame_height_m": 9.794,
+                "smoke_column_height_m": 649.167
+              },
+              "weather": {
+                "air_temperature_c": 27.167,
+                "relative_humidity_percent": 31.583,
+                "wind_speed_m_s": 4.993,
+                "wind_direction_degrees": 51.127,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.273,
+                "pressure_hpa": 1005.75
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 510.386
+              }
+            }
+          ]
+        },
+        {
+          "day_index": 2,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 115200,
+                "active_area_m2": 40212.386,
+                "active_flame_centroid_local_m": [
+                  11738.59,
+                  8873.624,
+                  488.67
+                ],
+                "active_flame_front_radius_m": 200,
+                "burned_area_m2": 1053414.201,
+                "fire_front_length_m": 1494.002,
+                "max_flame_height_m": 8.444,
+                "smoke_column_height_m": 608.889
+              },
+              "weather": {
+                "air_temperature_c": 23.222,
+                "relative_humidity_percent": 38.444,
+                "wind_speed_m_s": 4.604,
+                "wind_direction_degrees": 53.17,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.317,
+                "pressure_hpa": 1005.667
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 483.67
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 136800,
+                "active_area_m2": 45396.014,
+                "active_flame_centroid_local_m": [
+                  11662.289,
+                  9006.65,
+                  497.126
+                ],
+                "active_flame_front_radius_m": 212.5,
+                "burned_area_m2": 1401202.774,
+                "fire_front_length_m": 1600.358,
+                "max_flame_height_m": 12.995,
+                "smoke_column_height_m": 936.111
+              },
+              "weather": {
+                "air_temperature_c": 32.278,
+                "relative_humidity_percent": 21.306,
+                "wind_speed_m_s": 6.106,
+                "wind_direction_degrees": 55.212,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.194,
+                "pressure_hpa": 1005.583
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 492.126
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 158400,
+                "active_area_m2": 50893.801,
+                "active_flame_centroid_local_m": [
+                  11588.915,
+                  9139.109,
+                  523.511
+                ],
+                "active_flame_front_radius_m": 225,
+                "burned_area_m2": 1770624.741,
+                "fire_front_length_m": 1708.241,
+                "max_flame_height_m": 9.959,
+                "smoke_column_height_m": 790.833
+              },
+              "weather": {
+                "air_temperature_c": 27.333,
+                "relative_humidity_percent": 31.167,
+                "wind_speed_m_s": 5.177,
+                "wind_direction_degrees": 57.255,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.288,
+                "pressure_hpa": 1005.5
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 518.511
+              }
+            }
+          ]
+        },
+        {
+          "day_index": 3,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 201600,
+                "active_area_m2": 56705.747,
+                "active_flame_centroid_local_m": [
+                  11516.507,
+                  9267.696,
+                  557.344
+                ],
+                "active_flame_front_radius_m": 237.5,
+                "burned_area_m2": 2159064.54,
+                "fire_front_length_m": 1817.651,
+                "max_flame_height_m": 8.609,
+                "smoke_column_height_m": 750.556
+              },
+              "weather": {
+                "air_temperature_c": 23.389,
+                "relative_humidity_percent": 38.028,
+                "wind_speed_m_s": 4.788,
+                "wind_direction_degrees": 59.297,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.334,
+                "pressure_hpa": 1005.417
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 552.344
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 223200,
+                "active_area_m2": 62831.853,
+                "active_flame_centroid_local_m": [
+                  11442.984,
+                  9389.443,
+                  525.773
+                ],
+                "active_flame_front_radius_m": 250,
+                "burned_area_m2": 2564564.24,
+                "fire_front_length_m": 1928.589,
+                "max_flame_height_m": 13.16,
+                "smoke_column_height_m": 1077.778
+              },
+              "weather": {
+                "air_temperature_c": 32.444,
+                "relative_humidity_percent": 20.889,
+                "wind_speed_m_s": 6.289,
+                "wind_direction_degrees": 61.34,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.213,
+                "pressure_hpa": 1005.333
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 520.773
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 244800,
+                "active_area_m2": 69272.118,
+                "active_flame_centroid_local_m": [
+                  11366.294,
+                  9502.141,
+                  532.811
+                ],
+                "active_flame_front_radius_m": 262.5,
+                "burned_area_m2": 2985594.029,
+                "fire_front_length_m": 2041.053,
+                "max_flame_height_m": 10.124,
+                "smoke_column_height_m": 932.5
+              },
+              "weather": {
+                "air_temperature_c": 27.5,
+                "relative_humidity_percent": 30.75,
+                "wind_speed_m_s": 5.36,
+                "wind_direction_degrees": 63.382,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.308,
+                "pressure_hpa": 1005.25
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 527.811
+              }
+            }
+          ]
+        },
+        {
+          "day_index": 4,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 288000,
+                "active_area_m2": 76026.542,
+                "active_flame_centroid_local_m": [
+                  11284.569,
+                  9604.66,
+                  536.014
+                ],
+                "active_flame_front_radius_m": 275,
+                "burned_area_m2": 3420920.159,
+                "fire_front_length_m": 2155.045,
+                "max_flame_height_m": 8.774,
+                "smoke_column_height_m": 892.222
+              },
+              "weather": {
+                "air_temperature_c": 23.556,
+                "relative_humidity_percent": 37.611,
+                "wind_speed_m_s": 4.971,
+                "wind_direction_degrees": 65.425,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.355,
+                "pressure_hpa": 1005.167
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 531.014
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 309600,
+                "active_area_m2": 83095.126,
+                "active_flame_centroid_local_m": [
+                  11196.262,
+                  9697.133,
+                  545.373
+                ],
+                "active_flame_front_radius_m": 287.5,
+                "burned_area_m2": 3869523.074,
+                "fire_front_length_m": 2270.564,
+                "max_flame_height_m": 13.325,
+                "smoke_column_height_m": 1219.444
+              },
+              "weather": {
+                "air_temperature_c": 32.611,
+                "relative_humidity_percent": 20.472,
+                "wind_speed_m_s": 6.472,
+                "wind_direction_degrees": 67.467,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.234,
+                "pressure_hpa": 1005.083
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 540.373
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 331200,
+                "active_area_m2": 90477.868,
+                "active_flame_centroid_local_m": [
+                  11100.259,
+                  9780.986,
+                  516.975
+                ],
+                "active_flame_front_radius_m": 300,
+                "burned_area_m2": 4330543.739,
+                "fire_front_length_m": 2387.61,
+                "max_flame_height_m": 10.289,
+                "smoke_column_height_m": 1074.167
+              },
+              "weather": {
+                "air_temperature_c": 27.667,
+                "relative_humidity_percent": 30.333,
+                "wind_speed_m_s": 5.543,
+                "wind_direction_degrees": 69.51,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.328,
+                "pressure_hpa": 1005
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 511.975
+              }
+            }
+          ]
+        },
+        {
+          "day_index": 5,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 374400,
+                "active_area_m2": 98174.77,
+                "active_flame_centroid_local_m": [
+                  10995.968,
+                  9858.799,
+                  479.129
+                ],
+                "active_flame_front_radius_m": 312.5,
+                "burned_area_m2": 4803246.852,
+                "fire_front_length_m": 2506.184,
+                "max_flame_height_m": 8.939,
+                "smoke_column_height_m": 1033.889
+              },
+              "weather": {
+                "air_temperature_c": 23.722,
+                "relative_humidity_percent": 37.194,
+                "wind_speed_m_s": 5.154,
+                "wind_direction_degrees": 122.173,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.374,
+                "pressure_hpa": 1004.917
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 474.129
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 396000,
+                "active_area_m2": 106185.832,
+                "active_flame_centroid_local_m": [
+                  10883.361,
+                  9934.018,
+                  467.196
+                ],
+                "active_flame_front_radius_m": 325,
+                "burned_area_m2": 5286994.717,
+                "fire_front_length_m": 2626.284,
+                "max_flame_height_m": 13.49,
+                "smoke_column_height_m": 1361.111
+              },
+              "weather": {
+                "air_temperature_c": 32.778,
+                "relative_humidity_percent": 20.056,
+                "wind_speed_m_s": 6.656,
+                "wind_direction_degrees": 125.033,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.251,
+                "pressure_hpa": 1004.833
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 462.196
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 417600,
+                "active_area_m2": 114511.052,
+                "active_flame_centroid_local_m": [
+                  10762.984,
+                  10010.557,
+                  461.355
+                ],
+                "active_flame_front_radius_m": 337.5,
+                "burned_area_m2": 5781228.139,
+                "fire_front_length_m": 2747.912,
+                "max_flame_height_m": 10.454,
+                "smoke_column_height_m": 1215.833
+              },
+              "weather": {
+                "air_temperature_c": 27.833,
+                "relative_humidity_percent": 29.917,
+                "wind_speed_m_s": 5.727,
+                "wind_direction_degrees": 127.892,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.343,
+                "pressure_hpa": 1004.75
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 456.355
+              }
+            }
+          ]
+        },
+        {
+          "day_index": 6,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 460800,
+                "active_area_m2": 123150.432,
+                "active_flame_centroid_local_m": [
+                  10635.918,
+                  10092.329,
+                  457.585
+                ],
+                "active_flame_front_radius_m": 350,
+                "burned_area_m2": 6285452.096,
+                "fire_front_length_m": 2871.067,
+                "max_flame_height_m": 9.104,
+                "smoke_column_height_m": 1175.556
+              },
+              "weather": {
+                "air_temperature_c": 23.889,
+                "relative_humidity_percent": 36.778,
+                "wind_speed_m_s": 5.338,
+                "wind_direction_degrees": 130.752,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.386,
+                "pressure_hpa": 1004.667
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 452.585
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 482400,
+                "active_area_m2": 132103.971,
+                "active_flame_centroid_local_m": [
+                  10503.713,
+                  10182.778,
+                  435.77
+                ],
+                "active_flame_front_radius_m": 362.5,
+                "burned_area_m2": 6799224.781,
+                "fire_front_length_m": 2995.749,
+                "max_flame_height_m": 13.655,
+                "smoke_column_height_m": 1502.778
+              },
+              "weather": {
+                "air_temperature_c": 32.944,
+                "relative_humidity_percent": 19.639,
+                "wind_speed_m_s": 6.839,
+                "wind_direction_degrees": 133.611,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.259,
+                "pressure_hpa": 1004.583
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 430.77
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 504000,
+                "active_area_m2": 141371.669,
+                "active_flame_centroid_local_m": [
+                  10368.272,
+                  10284.465,
+                  420.986
+                ],
+                "active_flame_front_radius_m": 375,
+                "burned_area_m2": 7322149.043,
+                "fire_front_length_m": 3121.958,
+                "max_flame_height_m": 10.619,
+                "smoke_column_height_m": 1357.5
+              },
+              "weather": {
+                "air_temperature_c": 28,
+                "relative_humidity_percent": 29.5,
+                "wind_speed_m_s": 5.91,
+                "wind_direction_degrees": 136.471,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.348,
+                "pressure_hpa": 1004.5
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 415.986
+              }
+            }
+          ]
+        },
+        {
+          "day_index": 7,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 547200,
+                "active_area_m2": 150953.527,
+                "active_flame_centroid_local_m": [
+                  10231.728,
+                  10398.751,
+                  436.767
+                ],
+                "active_flame_front_radius_m": 387.5,
+                "burned_area_m2": 7853865.622,
+                "fire_front_length_m": 3249.694,
+                "max_flame_height_m": 9.269,
+                "smoke_column_height_m": 1317.222
+              },
+              "weather": {
+                "air_temperature_c": 24.056,
+                "relative_humidity_percent": 36.361,
+                "wind_speed_m_s": 5.521,
+                "wind_direction_degrees": 139.33,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.387,
+                "pressure_hpa": 1004.417
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 431.767
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 568800,
+                "active_area_m2": 160849.544,
+                "active_flame_centroid_local_m": [
+                  10096.287,
+                  10525.636,
+                  486.24
+                ],
+                "active_flame_front_radius_m": 400,
+                "burned_area_m2": 8394047.707,
+                "fire_front_length_m": 3378.957,
+                "max_flame_height_m": 13.82,
+                "smoke_column_height_m": 1644.444
+              },
+              "weather": {
+                "air_temperature_c": 33.111,
+                "relative_humidity_percent": 19.222,
+                "wind_speed_m_s": 7.022,
+                "wind_direction_degrees": 142.19,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.258,
+                "pressure_hpa": 1004.333
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 481.24
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 590400,
+                "active_area_m2": 171059.72,
+                "active_flame_centroid_local_m": [
+                  9964.082,
+                  10663.758,
+                  469.761
+                ],
+                "active_flame_front_radius_m": 412.5,
+                "burned_area_m2": 8942396.515,
+                "fire_front_length_m": 3509.748,
+                "max_flame_height_m": 10.784,
+                "smoke_column_height_m": 1499.167
+              },
+              "weather": {
+                "air_temperature_c": 28.167,
+                "relative_humidity_percent": 29.083,
+                "wind_speed_m_s": 6.093,
+                "wind_direction_degrees": 145.049,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.343,
+                "pressure_hpa": 1004.25
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 464.761
+              }
+            }
+          ]
+        },
+        {
+          "day_index": 8,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 633600,
+                "active_area_m2": 181584.055,
+                "active_flame_centroid_local_m": [
+                  9837.016,
+                  10810.557,
+                  467.779
+                ],
+                "active_flame_front_radius_m": 425,
+                "burned_area_m2": 9498637.653,
+                "fire_front_length_m": 3642.066,
+                "max_flame_height_m": 9.434,
+                "smoke_column_height_m": 1458.889
+              },
+              "weather": {
+                "air_temperature_c": 24.222,
+                "relative_humidity_percent": 35.944,
+                "wind_speed_m_s": 5.704,
+                "wind_direction_degrees": 147.908,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.379,
+                "pressure_hpa": 1004.167
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 462.779
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 655200,
+                "active_area_m2": 192422.55,
+                "active_flame_centroid_local_m": [
+                  9716.639,
+                  10962.59,
+                  496.799
+                ],
+                "active_flame_front_radius_m": 437.5,
+                "burned_area_m2": 10062518.102,
+                "fire_front_length_m": 3775.911,
+                "max_flame_height_m": 13.985,
+                "smoke_column_height_m": 1786.111
+              },
+              "weather": {
+                "air_temperature_c": 33.278,
+                "relative_humidity_percent": 18.806,
+                "wind_speed_m_s": 7.206,
+                "wind_direction_degrees": 150.768,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.246,
+                "pressure_hpa": 1004.083
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 491.799
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 676800,
+                "active_area_m2": 203575.204,
+                "active_flame_centroid_local_m": [
+                  9604.032,
+                  11115.942,
+                  470.424
+                ],
+                "active_flame_front_radius_m": 450,
+                "burned_area_m2": 10633803.686,
+                "fire_front_length_m": 3911.283,
+                "max_flame_height_m": 10.949,
+                "smoke_column_height_m": 1640.833
+              },
+              "weather": {
+                "air_temperature_c": 28.333,
+                "relative_humidity_percent": 28.667,
+                "wind_speed_m_s": 6.277,
+                "wind_direction_degrees": 153.627,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.328,
+                "pressure_hpa": 1004
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 465.424
+              }
+            }
+          ]
+        },
+        {
+          "day_index": 9,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 720000,
+                "active_area_m2": 215042.017,
+                "active_flame_centroid_local_m": [
+                  9499.741,
+                  11266.7,
+                  441.582
+                ],
+                "active_flame_front_radius_m": 462.5,
+                "burned_area_m2": 11212276.938,
+                "fire_front_length_m": 4048.182,
+                "max_flame_height_m": 9.599,
+                "smoke_column_height_m": 1600.556
+              },
+              "weather": {
+                "air_temperature_c": 24.389,
+                "relative_humidity_percent": 35.528,
+                "wind_speed_m_s": 5.888,
+                "wind_direction_degrees": 255.903,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.362,
+                "pressure_hpa": 1003.917
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 436.582
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 741600,
+                "active_area_m2": 226822.99,
+                "active_flame_centroid_local_m": [
+                  9403.738,
+                  11411.419,
+                  428.442
+                ],
+                "active_flame_front_radius_m": 475,
+                "burned_area_m2": 11797735.28,
+                "fire_front_length_m": 4186.609,
+                "max_flame_height_m": 14.15,
+                "smoke_column_height_m": 1927.778
+              },
+              "weather": {
+                "air_temperature_c": 33.444,
+                "relative_humidity_percent": 18.389,
+                "wind_speed_m_s": 7.389,
+                "wind_direction_degrees": 257.639,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.227,
+                "pressure_hpa": 1003.833
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 423.442
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 763200,
+                "active_area_m2": 238918.121,
+                "active_flame_centroid_local_m": [
+                  9315.431,
+                  11547.517,
+                  431.567
+                ],
+                "active_flame_front_radius_m": 487.5,
+                "burned_area_m2": 12389989.466,
+                "fire_front_length_m": 4326.562,
+                "max_flame_height_m": 11.114,
+                "smoke_column_height_m": 1782.5
+              },
+              "weather": {
+                "air_temperature_c": 28.5,
+                "relative_humidity_percent": 28.25,
+                "wind_speed_m_s": 6.46,
+                "wind_direction_degrees": 259.375,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.308,
+                "pressure_hpa": 1003.75
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 426.567
+              }
+            }
+          ]
+        },
+        {
+          "day_index": 10,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 806400,
+                "active_area_m2": 251327.412,
+                "active_flame_centroid_local_m": [
+                  9233.706,
+                  11673.57,
+                  432.418
+                ],
+                "active_flame_front_radius_m": 500,
+                "burned_area_m2": 12988862.243,
+                "fire_front_length_m": 4468.043,
+                "max_flame_height_m": 9.764,
+                "smoke_column_height_m": 1742.222
+              },
+              "weather": {
+                "air_temperature_c": 24.556,
+                "relative_humidity_percent": 35.111,
+                "wind_speed_m_s": 6.071,
+                "wind_direction_degrees": 261.111,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.341,
+                "pressure_hpa": 1003.667
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 427.418
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 828000,
+                "active_area_m2": 264050.863,
+                "active_flame_centroid_local_m": [
+                  9157.016,
+                  11789.443,
+                  450.857
+                ],
+                "active_flame_front_radius_m": 512.5,
+                "burned_area_m2": 13594187.183,
+                "fire_front_length_m": 4611.051,
+                "max_flame_height_m": 14.315,
+                "smoke_column_height_m": 2069.444
+              },
+              "weather": {
+                "air_temperature_c": 33.611,
+                "relative_humidity_percent": 17.972,
+                "wind_speed_m_s": 7.572,
+                "wind_direction_degrees": 262.847,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.206,
+                "pressure_hpa": 1003.583
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 445.857
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 849600,
+                "active_area_m2": 277088.472,
+                "active_flame_centroid_local_m": [
+                  9083.493,
+                  11896.267,
+                  458.465
+                ],
+                "active_flame_front_radius_m": 525,
+                "burned_area_m2": 14205807.674,
+                "fire_front_length_m": 4755.586,
+                "max_flame_height_m": 11.279,
+                "smoke_column_height_m": 1924.167
+              },
+              "weather": {
+                "air_temperature_c": 28.667,
+                "relative_humidity_percent": 27.833,
+                "wind_speed_m_s": 6.643,
+                "wind_direction_degrees": 264.583,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.288,
+                "pressure_hpa": 1003.5
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 453.465
+              }
+            }
+          ]
+        },
+        {
+          "day_index": 11,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 892800,
+                "active_area_m2": 290440.241,
+                "active_flame_centroid_local_m": [
+                  9011.085,
+                  11996.252,
+                  434.884
+                ],
+                "active_flame_front_radius_m": 537.5,
+                "burned_area_m2": 14823576.025,
+                "fire_front_length_m": 4901.648,
+                "max_flame_height_m": 9.929,
+                "smoke_column_height_m": 1883.889
+              },
+              "weather": {
+                "air_temperature_c": 24.722,
+                "relative_humidity_percent": 34.694,
+                "wind_speed_m_s": 6.254,
+                "wind_direction_degrees": 266.319,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.322,
+                "pressure_hpa": 1003.417
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 429.884
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 914400,
+                "active_area_m2": 304106.169,
+                "active_flame_centroid_local_m": [
+                  8937.711,
+                  12092.364,
+                  439.351
+                ],
+                "active_flame_front_radius_m": 550,
+                "burned_area_m2": 15447352.691,
+                "fire_front_length_m": 5049.238,
+                "max_flame_height_m": 14.48,
+                "smoke_column_height_m": 2211.111
+              },
+              "weather": {
+                "air_temperature_c": 33.778,
+                "relative_humidity_percent": 17.556,
+                "wind_speed_m_s": 7.756,
+                "wind_direction_degrees": 268.056,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.189,
+                "pressure_hpa": 1003.333
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 434.351
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 936000,
+                "active_area_m2": 318086.256,
+                "active_flame_centroid_local_m": [
+                  8861.41,
+                  12187.909,
+                  420.686
+                ],
+                "active_flame_front_radius_m": 562.5,
+                "burned_area_m2": 16077005.578,
+                "fire_front_length_m": 5198.354,
+                "max_flame_height_m": 11.444,
+                "smoke_column_height_m": 2065.833
+              },
+              "weather": {
+                "air_temperature_c": 28.833,
+                "relative_humidity_percent": 27.417,
+                "wind_speed_m_s": 6.827,
+                "wind_direction_degrees": 269.792,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.273,
+                "pressure_hpa": 1003.25
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 415.686
+              }
+            }
+          ]
+        },
+        {
+          "day_index": 12,
+          "hours": [
+            {
+              "capture_hour": "08:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 979200,
+                "active_area_m2": 332380.503,
+                "active_flame_centroid_local_m": [
+                  8780.483,
+                  12286.082,
+                  411.386
+                ],
+                "active_flame_front_radius_m": 575,
+                "burned_area_m2": 16712409.432,
+                "fire_front_length_m": 5348.998,
+                "max_flame_height_m": 10.094,
+                "smoke_column_height_m": 2025.556
+              },
+              "weather": {
+                "air_temperature_c": 24.889,
+                "relative_humidity_percent": 34.278,
+                "wind_speed_m_s": 6.438,
+                "wind_direction_degrees": 271.528,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.31,
+                "pressure_hpa": 1003.167
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 406.386
+              }
+            },
+            {
+              "capture_hour": "14:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 1000800,
+                "active_area_m2": 346988.909,
+                "active_flame_centroid_local_m": [
+                  8693.622,
+                  12389.53,
+                  418.466
+                ],
+                "active_flame_front_radius_m": 587.5,
+                "burned_area_m2": 17353445.291,
+                "fire_front_length_m": 5501.169,
+                "max_flame_height_m": 14.645,
+                "smoke_column_height_m": 2352.778
+              },
+              "weather": {
+                "air_temperature_c": 33.944,
+                "relative_humidity_percent": 17.139,
+                "wind_speed_m_s": 7.939,
+                "wind_direction_degrees": 273.264,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.181,
+                "pressure_hpa": 1003.083
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 413.466
+              }
+            },
+            {
+              "capture_hour": "20:00",
+              "fire": {
+                "state": "active",
+                "simulation_time_seconds": 1022400,
+                "active_area_m2": 361911.474,
+                "active_flame_centroid_local_m": [
+                  8600,
+                  12500,
+                  436.105
+                ],
+                "active_flame_front_radius_m": 600,
+                "burned_area_m2": 18000000,
+                "fire_front_length_m": 5654.867,
+                "max_flame_height_m": 11.609,
+                "smoke_column_height_m": 2207.5
+              },
+              "weather": {
+                "air_temperature_c": 29,
+                "relative_humidity_percent": 27,
+                "wind_speed_m_s": 7.01,
+                "wind_direction_degrees": 275,
+                "precipitation_mm_h": 0,
+                "cloud_cover_fraction": 0.268,
+                "pressure_hpa": 1003
+              },
+              "terrain_sample": {
+                "source": "IGN LiDAR-HD MNT 0.50 m",
+                "ground_z_ign69_m": 431.105
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -20,3 +20,6 @@ datasets/
 models/
 outputs/
 runs/
+asset4sim/generated_hunyuan3d_v2/
+.tmp/
+workspace/

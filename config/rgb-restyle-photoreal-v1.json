@@ -1,0 +1,147 @@
+{
+  "schema": "fireviewer.rgb-restyle.contract.v1",
+  "contract_id": "rgb-photoreal-flux2-klein-4b-v1",
+  "status": "locked-pilot-only",
+  "purpose": "Change only the visual style of an existing co-registered RGB capture from low-poly synthetic rendering to photorealistic rendering.",
+  "source_contract": {
+    "input_name": "rgb.png",
+    "overwrite_source": false,
+    "derived_output_relative_dir": "restyles/photoreal_v1",
+    "required_files": [
+      "rgb.png",
+      "capture-plan.json",
+      "training-targets.json",
+      "camera_params.json",
+      "geolocation.json",
+      "depth_distance_to_camera_m.npz",
+      "normals_replicator.npz",
+      "semantic_ids.npz",
+      "instance_ids.npz",
+      "flame_mask.npz",
+      "smoke_mask.npz",
+      "smoke_source_mask.npz",
+      "burned_area_mask.npz",
+      "front_visible_mask.npz",
+      "perimeter_mask.npz"
+    ],
+    "protected_masks": [
+      "flame_mask.npz",
+      "smoke_mask.npz",
+      "smoke_source_mask.npz",
+      "burned_area_mask.npz",
+      "front_visible_mask.npz",
+      "perimeter_mask.npz"
+    ],
+    "immutable_metadata": true,
+    "immutable_modalities": true,
+    "all_source_files_sha256_required": true
+  },
+  "composition_lock": {
+    "camera_pose_change_allowed": false,
+    "crop_change_allowed": false,
+    "resolution_change_allowed": false,
+    "object_addition_allowed": false,
+    "object_removal_allowed": false,
+    "fire_or_smoke_relocation_allowed": false,
+    "protected_core_pixels_exact": true,
+    "protected_feather_radius_px": 6,
+    "edge_match_radius_px": 3,
+    "minimum_source_edge_recall": 0.88,
+    "minimum_semantic_boundary_recall": 0.8,
+    "minimum_depth_boundary_recall": 0.8,
+    "minimum_coarse_luminance_correlation": 0.82,
+    "minimum_mean_absolute_style_delta": 0.015,
+    "maximum_mean_absolute_style_delta": 0.32
+  },
+  "engine": {
+    "name": "ComfyUI",
+    "minimum_version": "0.27.0",
+    "api_workflow": "workflows/rgb-photoreal-flux2-klein-4b-v1.api.json",
+    "api_workflow_sha256": "d1184fc55676ef322d40f8ff1e9fb104c07d70452c4b98b79fc8100455c4d321",
+    "required_node_classes": [
+      "UNETLoader",
+      "CLIPLoader",
+      "VAELoader",
+      "LoadImage",
+      "VAEEncode",
+      "CLIPTextEncode",
+      "ReferenceLatent",
+      "CFGGuider",
+      "RandomNoise",
+      "KSamplerSelect",
+      "Flux2Scheduler",
+      "EmptyFlux2LatentImage",
+      "SamplerCustomAdvanced",
+      "VAEDecode",
+      "SaveImage"
+    ],
+    "seed_derivation": "sha256(source_rgb_sha256:capture_id:workflow_sha256)-first-64-bits",
+    "sampler": "euler",
+    "steps": 4,
+    "cfg": 1.0,
+    "models": [
+      {
+        "role": "diffusion_model",
+        "comfy_subdir": "diffusion_models",
+        "comfy_name": "flux-2-klein-4b-nvfp4.safetensors",
+        "size_bytes": 2460413488,
+        "sha256": "d8c5007b6a3bbbdfd38538bbcef5101a55dfde81894f58d2e3c8701cdef3542b",
+        "source_repo": "black-forest-labs/FLUX.2-klein-4b-nvfp4",
+        "source_revision": "286fd2fbb83294d929d5be472620826c28e6085b",
+        "source_url": "https://huggingface.co/black-forest-labs/FLUX.2-klein-4b-nvfp4/blob/286fd2fbb83294d929d5be472620826c28e6085b/flux-2-klein-4b-nvfp4.safetensors",
+        "license": "Apache-2.0",
+        "license_status": "verified"
+      },
+      {
+        "role": "text_encoder",
+        "comfy_subdir": "text_encoders",
+        "comfy_name": "qwen_3_4b.safetensors",
+        "size_bytes": 8044982048,
+        "sha256": "6c671498573ac2f7a5501502ccce8d2b08ea6ca2f661c458e708f36b36edfc5a",
+        "source_repo": "Comfy-Org/vae-text-encorder-for-flux-klein-4b",
+        "source_revision": "8556e4d870cda7c53c7942b190bfeea5be9bd411",
+        "source_url": "https://huggingface.co/Comfy-Org/vae-text-encorder-for-flux-klein-4b/blob/main/split_files/text_encoders/qwen_3_4b.safetensors",
+        "license": "Apache-2.0 upstream component",
+        "license_status": "review-required-for-public-dataset"
+      },
+      {
+        "role": "vae",
+        "comfy_subdir": "vae",
+        "comfy_name": "flux2-vae.safetensors",
+        "size_bytes": 336213556,
+        "sha256": "d64f3a68e1cc4f9f4e29b6e0da38a0204fe9a49f2d4053f0ec1fa1ca02f9c4b5",
+        "source_repo": "Comfy-Org/flux2-dev",
+        "source_revision": "ca4ac7c84eb42f3200fffc85b5fbee67129e6ffa",
+        "source_url": "https://huggingface.co/Comfy-Org/flux2-dev/blob/ca4ac7c84eb42f3200fffc85b5fbee67129e6ffa/split_files/vae/flux2-vae.safetensors",
+        "license": "FLUX non-commercial repository packaging; equivalent VAE is distributed with Apache-2.0 FLUX.2 Klein 4B",
+        "license_status": "review-required-for-public-dataset"
+      }
+    ],
+    "control_adapters": [],
+    "lora_adapters": []
+  },
+  "prompt": {
+    "positive": "Restyle this exact existing synthetic wildfire observation as a natural photorealistic camera photograph. Preserve the identical camera position, camera orientation, crop, field of view, perspective, horizon, terrain relief, road geometry, building footprints, tree positions and silhouettes, flame positions, smoke positions, extents, occlusions and visibility. Change only materials, physically plausible surface detail, vegetation microtexture, atmospheric rendering, sky appearance and natural photographic light response. French alpine landscape, realistic scale, restrained colors, physically plausible daylight, documentary photograph, no cinematic staging.",
+    "negative": "camera movement, changed crop, changed zoom, changed focal length, shifted horizon, altered terrain, moved road, moved building, moved tree, added tree, removed tree, moved flame, added flame, removed flame, moved smoke, added smoke, removed smoke, changed fire perimeter, new object, removed object, people, vehicle, text, watermark, illustration, low-poly, cartoon, oversaturated, dramatic cinematic composition"
+  },
+  "extension_policy": {
+    "controlnet_or_lora_in_v1_allowed": false,
+    "change_requires_new_contract_id": true,
+    "change_requires_new_pilot": true,
+    "change_requires_new_model_hashes": true
+  },
+  "release_gate": {
+    "single_local_pilot_allowed": true,
+    "batch_generation_allowed": false,
+    "training_admission_allowed": false,
+    "public_distribution_allowed": false,
+    "unlock_requires": [
+      "ComfyUI runtime preflight after the current unrelated workload is complete",
+      "one positive-fire pilot and one negative pilot",
+      "automatic composition QA pass",
+      "human visual acceptance",
+      "text encoder and VAE public-dataset license review",
+      "versioned activation receipt"
+    ]
+  }
+}

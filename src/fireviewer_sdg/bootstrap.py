@@ -47,17 +47,22 @@ def _prepare_volume(root: Path) -> None:
 
 
 def _run_compatibility_checker() -> None:
-    checker = Path(sys.executable).parent / "isaacsim"
-    if sys.platform == "win32":
-        checker = checker.with_suffix(".exe")
+    configured = os.getenv("FW_SDG_ISAAC_COMPATIBILITY_CHECKER", "").strip()
+    if configured:
+        checker = Path(configured)
+        command = [str(checker), "--/app/quitAfter=10", "--no-window"]
+    else:
+        checker = Path(sys.executable).parent / "isaacsim"
+        if sys.platform == "win32":
+            checker = checker.with_suffix(".exe")
+        command = [
+            str(checker),
+            "isaacsim.exp.compatibility_check",
+            "--/app/quitAfter=10",
+            "--no-window",
+        ]
     if not checker.is_file():
         raise RuntimeError("Isaac Sim compatibility checker entrypoint is absent")
-    command = [
-        str(checker),
-        "isaacsim.exp.compatibility_check",
-        "--/app/quitAfter=10",
-        "--no-window",
-    ]
     if hasattr(os, "geteuid") and os.geteuid() == 0:
         command.append("--allow-root")
     subprocess.run(
@@ -78,6 +83,49 @@ def _run_probe(*, prepare_assets: bool = False) -> None:
         timeout=1800 if prepare_assets else 240,
         env=environment,
     )
+
+
+def _existing_zone_gpu_preflight(settings: Settings) -> dict[str, object] | None:
+    """Reuse a verified native runtime receipt for subsequent zone phases.
+
+    A Flow/Replicator probe owns a disposable Kit process.  Repeating it before
+    every download or build phase has no extra evidentiary value and can crash
+    while Kit tears down its task groups.  The zone wrapper supplies a receipt
+    path inside its workspace; accept it only when all runtime gates are still
+    explicitly present.
+    """
+
+    if settings.run_mode != "zone_scenes":
+        return None
+    if os.getenv("FW_SDG_FORCE_GPU_PREFLIGHT", "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }:
+        return None
+    configured = os.getenv("FW_SDG_GPU_PREFLIGHT_RECEIPT", "").strip()
+    if not configured:
+        return None
+    receipt = Path(configured).resolve()
+    try:
+        receipt.relative_to(settings.volume_root.resolve())
+    except ValueError:
+        return None
+    if not receipt.is_file():
+        return None
+    try:
+        payload = json.loads(receipt.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    if not isinstance(payload, dict):
+        return None
+    if not all(payload.get(key) is True for key in ("isaac_sim", "replicator", "flow")):
+        return None
+    rtx = payload.get("rtx_render")
+    if not isinstance(rtx, dict) or not rtx.get("resolution") or not rtx.get("shape"):
+        return None
+    return payload
 
 
 def _set_setup_stage(
@@ -239,19 +287,25 @@ def main() -> None:
         volume_root=settings.volume_root,
         allowed_hosts=settings.allowed_hosts,
     )
-    if not settings.skip_gpu_preflight:
+    reused_zone_preflight = _existing_zone_gpu_preflight(settings)
+    if not settings.skip_gpu_preflight and reused_zone_preflight is None:
         _run_compatibility_checker()
         _run_probe()
     status: dict[str, object] = {
         "status": "ready",
         "mode": settings.run_mode,
         "gpu_preflight_skipped": settings.skip_gpu_preflight,
+        "gpu_preflight_reused": reused_zone_preflight is not None,
         "downloaded": len(result.downloaded),
         "cache_hits": len(result.cache_hits),
         "setup": {
             "runtime": {
                 "state": "ready",
-                "detail": "GPU, Isaac, Flow et Replicator validés.",
+                "detail": (
+                    "Reçu GPU/Isaac/Flow/Replicator Z16 réutilisé."
+                    if reused_zone_preflight is not None
+                    else "GPU, Isaac, Flow et Replicator validés."
+                ),
             },
             "asset_lock": {
                 "state": "pending",
@@ -265,6 +319,13 @@ def main() -> None:
     }
     print(f"fireviewer sdg ready {json.dumps(status, sort_keys=True)}", flush=True)
     if settings.run_mode == "probe":
+        return
+    if settings.run_mode == "zone_scenes":
+        # Geographic scene production consumes a separate, read-only catalog.
+        from fireviewer_sdg.zone_scenes import main as zone_scenes_main
+
+        if zone_scenes_main() != 0:
+            raise RuntimeError("zone scene production command failed")
         return
     if settings.run_mode == "generate":
         scenario = os.getenv("FW_SDG_SCENARIO", "").strip()

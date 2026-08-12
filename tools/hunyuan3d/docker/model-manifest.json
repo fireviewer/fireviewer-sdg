@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "repositories": {
+    "texture": {
+      "repo_id": "tencent/Hunyuan3D-2",
+      "revision": "9cd649ba6913f7a852e3286bad86bfa9a2d83dcf",
+      "allow_patterns": [
+        "hunyuan3d-delight-v2-0/**",
+        "hunyuan3d-paint-v2-0/**"
+      ]
+    },
+    "shape": {
+      "repo_id": "Kijai/Hunyuan3D-2_safetensors",
+      "revision": "b90d409d53a8350e43417003071b610637c250a5",
+      "filename": "hunyuan3d-dit-v2-0-fp16.safetensors"
+    }
+  },
+  "critical_files": [
+    {
+      "path": "diffusion_models/hy3dgen/hunyuan3d-dit-v2-0-fp16.safetensors",
+      "bytes": 4928151594,
+      "sha256": "ccda5cb4327111112a0aacd2b6798a7a6735e0ceece3b402b44999dada79595e"
+    },
+    {
+      "path": "diffusers/hunyuan3d-delight-v2-0/text_encoder/model.safetensors",
+      "bytes": 680820392,
+      "sha256": "bc1827c465450322616f06dea41596eac7d493f4e95904dcb51f0fc745c4e13f"
+    },
+    {
+      "path": "diffusers/hunyuan3d-delight-v2-0/unet/diffusion_pytorch_model.safetensors",
+      "bytes": 3463772592,
+      "sha256": "0ce61d15a43d11ba19079ab8f24dfce78b876d3f5291470079ef64b17e08ca58"
+    },
+    {
+      "path": "diffusers/hunyuan3d-delight-v2-0/vae/diffusion_pytorch_model.safetensors",
+      "bytes": 167335342,
+      "sha256": "3e4c08995484ee61270175e9e7a072b66a6e4eeb5f0c266667fe1f45b90daf9a"
+    },
+    {
+      "path": "diffusers/hunyuan3d-paint-v2-0/text_encoder/pytorch_model.bin",
+      "bytes": 1361671895,
+      "sha256": "c3e254d7b61353497ea0be2c4013df4ea8f739ee88cffa0ba58cd085459ed565"
+    },
+    {
+      "path": "diffusers/hunyuan3d-paint-v2-0/unet/diffusion_pytorch_model.safetensors",
+      "bytes": 3662636472,
+      "sha256": "1c5ce434ba976b30bbb51a080917ecd39f8d8761691887b5df3be765ef4bd9e9"
+    },
+    {
+      "path": "diffusers/hunyuan3d-paint-v2-0/vae/diffusion_pytorch_model.safetensors",
+      "bytes": 167335310,
+      "sha256": "abcec86e499e1ce9f05d1630725d386dc533b61fe0947ab034f07f89042e7a61"
+    }
+  ]
+}

@@ -40,7 +40,7 @@ class Settings:
             if host.strip()
         }
         run_mode = os.getenv("FW_SDG_RUN_MODE", "service").strip().lower()
-        if run_mode not in {"service", "probe", "generate"}:
+        if run_mode not in {"service", "probe", "generate", "zone_scenes"}:
             raise RuntimeError(f"unsupported FW_SDG_RUN_MODE: {run_mode}")
         port = int(os.getenv("FW_SDG_PORT", "8000"))
         if not 1 <= port <= 65535:

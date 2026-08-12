@@ -11,6 +11,12 @@ import time
 from pathlib import Path
 from typing import Any
 
+from fireviewer_sdg.fireviewer_writer import (
+    REQUIRED_ANNOTATORS,
+    FireViewerReplicatorWriter,
+    kit_physx_raycast_closest,
+)
+
 
 PROCEDURAL_SCENE_MODE = "procedural_fire_landscape"
 USD_SCENE_MODE = "usd"
@@ -155,6 +161,14 @@ def load_scenario(path: Path) -> dict[str, Any]:
         raise ValueError(f"unsupported annotations: {sorted(unsupported)}")
     if "rgb" not in normalized_annotations or "semantic_segmentation" not in normalized_annotations:
         raise ValueError("rgb and semantic_segmentation annotations are required")
+    missing_writer_annotations = set(REQUIRED_ANNOTATORS) - set(
+        normalized_annotations
+    )
+    if missing_writer_annotations:
+        raise ValueError(
+            "FireViewer writer requires annotations: "
+            f"{sorted(missing_writer_annotations)}"
+        )
 
     payload["scene_mode"] = scene_mode
     payload["scenario_id"] = scenario_id
@@ -409,9 +423,9 @@ def generate(scenario_path: Path) -> Path:
         rep.set_global_seed(int(scenario["seed"]))
         carb.settings.get_settings().set("rtx/post/dlss/execMode", 2)
 
+        context = omni.usd.get_context()
         representation: dict[str, Any]
         if scenario["scene_mode"] == USD_SCENE_MODE:
-            context = omni.usd.get_context()
             context.open_stage(str(Path(scenario["scene_usd"]).resolve()))
             deadline = time.monotonic() + 120
             while context.is_loading() and time.monotonic() < deadline:
@@ -445,12 +459,14 @@ def generate(scenario_path: Path) -> Path:
         render_product = rep.create.render_product(camera, resolution, name="DatasetRenderProduct")
         output_dir = Path(str(scenario["output_dir"])).resolve()
         output_dir.mkdir(parents=True, exist_ok=True)
-        backend = rep.backends.get("DiskBackend")
-        backend.initialize(output_dir=str(output_dir))
-        writer = rep.writers.get("BasicWriter")
-        writer.initialize(
-            backend=backend,
-            **{annotation: True for annotation in scenario["annotations"]},
+        stage = context.get_stage()
+        if stage is None:
+            raise RuntimeError("FireViewer writer has no open USD stage")
+        writer = FireViewerReplicatorWriter(
+            rep=rep,
+            stage=stage,
+            output_root=output_dir,
+            raycast_closest=kit_physx_raycast_closest(),
         )
         writer.attach(render_product)
 
@@ -458,20 +474,35 @@ def generate(scenario_path: Path) -> Path:
         if not 1 <= rt_subframes <= 64:
             raise ValueError("rt_subframes must be between 1 and 64")
         for index, pose in enumerate(pose_schedule):
+            position = _vector(pose["position"], field="position")
+            look_at = _vector(pose["look_at"], field="look_at")
             rep.functional.modify.pose(
                 camera,
-                position_value=_vector(pose["position"], field="position"),
-                look_at_value=_vector(pose["look_at"], field="look_at"),
+                position_value=position,
+                look_at_value=look_at,
                 look_at_up_axis=(0.0, 0.0, 1.0),
                 write_to_usd=True,
             )
             rep.orchestrator.step(delta_time=0.0, rt_subframes=rt_subframes)
+            writer.capture_frame(
+                frame_index=index,
+                camera_position_m=position,
+                camera_pose={
+                    "position_m": list(position),
+                    "look_at_local_m": list(look_at),
+                    "axes": "OpenUSD_Z_up_camera_minus_Z_forward",
+                },
+                intrinsics={
+                    "width_px": resolution[0],
+                    "height_px": resolution[1],
+                    "source": "authored_usd_camera",
+                },
+            )
             if index == 0 or (index + 1) % 32 == 0 or index + 1 == len(pose_schedule):
                 print(
                     f"fireviewer sdg generation: frame={index + 1}/{len(pose_schedule)}",
                     flush=True,
                 )
-        rep.orchestrator.wait_until_complete()
         writer.detach()
         render_product.destroy()
 

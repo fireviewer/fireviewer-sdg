@@ -1,0 +1,11 @@
+[omni_usd_composer]
+application_name = "fireviewer_usd_composer"
+application_display_name = "FireViewer USD Composer"
+version = "0.1.0"
+add_layers = "No"
+selected_layers = []
+
+[omni_usd_composer.extensions.omni_usd_composer_setup]
+extension_name = "fireviewer_usd_composer_setup"
+extension_display_name = "FireViewer USD Composer Setup"
+version = "0.1.0"

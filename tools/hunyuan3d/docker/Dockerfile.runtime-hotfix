@@ -1,0 +1,26 @@
+# syntax=docker/dockerfile:1.7
+ARG BASE_IMAGE=docker.io/charlibillabert/fireviewer-asset4sim-hunyuan3d@sha256:103d17ab4d3cf9db515b237a653d381d6b547faa4bb47200337f071de0739e97
+FROM ${BASE_IMAGE}
+
+USER root
+ENV LD_LIBRARY_PATH=/opt/comfy-venv/lib/python3.12/site-packages/omni/converter/hoops:${LD_LIBRARY_PATH}
+RUN apt-get update && apt-get install -y --no-install-recommends libopengl0 && \
+    rm -rf /var/lib/apt/lists/* && \
+    ldconfig && \
+    /opt/comfy-venv/bin/pip install --no-cache-dir rtree==1.4.1
+
+COPY tools/hunyuan3d/workflows/hy3d_example_01.user-supplied.api.json \
+    /opt/ComfyUI/custom_nodes/Asset4Sim_Hunyuan3D/workflows/hy3d_example_01.user-supplied.api.json
+COPY tools/hunyuan3d/workflows/hy3d_example_01.user-supplied.api.json \
+    /opt/asset4sim/workflows/hy3d_example_01.user-supplied.api.json
+COPY tools/hunyuan3d /opt/ComfyUI/custom_nodes/Asset4Sim_Hunyuan3D
+
+RUN echo "8f19292458c3bbc103e5a9b142a8affbe6a3082329f82c4a7f216be9ff7a0489  /opt/asset4sim/workflows/hy3d_example_01.user-supplied.api.json" | sha256sum -c - && \
+    ldconfig -p | grep -q "libOpenGL.so.0" && \
+    /opt/comfy-venv/bin/python -m py_compile \
+      /opt/ComfyUI/custom_nodes/Asset4Sim_Hunyuan3D/production_batches.py \
+      /opt/ComfyUI/custom_nodes/Asset4Sim_Hunyuan3D/batch_convert_glb_to_usd.py && \
+    /opt/comfy-venv/bin/python -c "import rtree; import usd_convert_cad; from pxr import Usd; print(rtree.__version__, Usd.GetVersion())"
+
+LABEL org.opencontainers.image.version="2.0.2" \
+      org.opencontainers.image.description="FireViewer Asset4Sim Hunyuan3D 2.0 runtime with PyMeshLab OpenGL and Trimesh R-tree support plus exact user workflow"

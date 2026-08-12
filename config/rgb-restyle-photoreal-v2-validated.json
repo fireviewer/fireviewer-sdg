@@ -1,0 +1,52 @@
+{
+  "schema": "fireviewer.rgb-restyle.contract.v1",
+  "extends": "rgb-restyle-photoreal-v1.json",
+  "contract_id": "rgb-restyle-photoreal-v2-validated",
+  "status": "locked-batch-validation",
+  "purpose": "Photorealistic RGB-only restyle with fail-closed visible-scene conservation, ordered zoom series and deterministic retry admission.",
+  "source_contract": {
+    "derived_output_relative_dir": "restyles/photoreal_v2_validated"
+  },
+  "engine": {
+    "api_workflow": "workflows/rgb-photoreal-flux2-klein-4b-v2.api.json",
+    "api_workflow_sha256": "70ab593a1123090ac736e744fbc14e909fabc7ca99b34f1668a87300c750c6f0",
+    "steps": 8
+  },
+  "prompt": {
+    "positive": "Restyle the exact registered synthetic wildfire observation as a high-fidelity natural documentary photograph. Preserve every visible element and its screen position: identical camera pose, horizon, perspective, crop, terrain relief, roads, buildings, tree silhouettes, flames, smoke plume, fire perimeter, occlusions and visibility. Change only visual appearance: real photographic materials, natural vegetation microdetail, physically plausible smoke translucency, nuanced fire light, atmospheric depth, overcast or clear natural sky, calibrated exposure, realistic lens response, restrained French alpine colour science. No re-framing, no restaging, no geometry edits.",
+    "negative": "camera movement, changed crop, changed zoom, changed focal length, shifted horizon, altered terrain, moved road, moved building, moved tree, added tree, removed tree, moved flame, added flame, removed flame, moved smoke, added smoke, removed smoke, changed fire perimeter, new object, removed object, people, vehicle, text, watermark, illustration, low-poly, cartoon, plastic material, oversaturated, HDR halo, cinematic restaging"
+  },
+  "composition_lock": {
+    "minimum_output_edge_precision": 0.62,
+    "minimum_source_edge_recall": 0.9,
+    "minimum_semantic_boundary_recall": 0.86,
+    "minimum_depth_boundary_recall": 0.86,
+    "minimum_coarse_luminance_correlation": 0.86
+  },
+  "zoom_series_lock": {
+    "ordered_members": ["original", "zoom01", "zoom02", "zoom03", "zoom04", "zoom05"],
+    "camera_position_tolerance_m": 0.001,
+    "camera_orientation_tolerance_degrees": 0.05,
+    "projected_event_center_tolerance_normalized": 0.035,
+    "require_same_resolution": true,
+    "require_monotonic_zoom_fov": true,
+    "require_same_camera_id": true
+  },
+  "retry_policy": {
+    "max_regenerations_after_rejection": 3,
+    "retry_only_for_generation_or_composition_rejection": true,
+    "retain_rejected_candidates": true,
+    "advance_series_only_after_admission": true
+  },
+  "release_gate": {
+    "batch_generation_allowed": true,
+    "training_admission_allowed": false,
+    "public_distribution_allowed": false,
+    "unlock_requires": [
+      "Per-candidate visible-scene conservation QA pass",
+      "Per-zoom-series pose and projected-event consistency pass",
+      "Human visual acceptance of the photorealistic profile",
+      "Versioned batch validation receipt"
+    ]
+  }
+}

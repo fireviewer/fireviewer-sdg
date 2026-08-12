@@ -155,6 +155,32 @@ docker build --pull \
 
 ## Configuration RunPod
 
+### Profil Omniverse Editor 4 × 5
+
+Le profil distinct RunPod cible exclusivement un **RTX PRO 6000 Blackwell
+Server Edition 96 Go** avec 150 Go de RAM. Son prévol exige au moins
+`90000 MiB` de VRAM et `138000 MiB` de RAM réellement accessibles, en tenant
+compte des limites cgroup. Il construit le véritable Omniverse Editor,
+matérialise les sources LiDAR et les assets USD/PBR, puis s'arrête avant toute
+simulation.
+
+Le portefeuille est fixé à **quatre scènes de base explicitement choisies,
+cinq variantes fictives photoréalistes par base, soit vingt scènes**. La
+procédure complète et sa frontière de preuve sont documentées dans
+[docs/runpod-omniverse-editor-20-simulations.md](docs/runpod-omniverse-editor-20-simulations.md).
+Le résultat accepté est verrouillé par le
+[contrat normatif photoréaliste](docs/omniverse-photoreal-training-contract.md).
+
+Contrairement au service headless ci-dessous, ce profil utilise 1 500 Go de
+NVMe conteneur éphémère, sans volume persistant. Kit, Isaac, Packman, les
+sources, les assets, les scènes et les observations restent sur ce disque
+jusqu'au transfert vérifié vers une destination choisie sur D:. Aucun script
+ne supprime ces données et le pod n'est jamais arrêté sans ordre explicite de
+l'opérateur. Le code et les tests locaux ne prouvent pas que le pod, l'Editor,
+les vingt scènes, leur qualité RTX ou ce transfert ont été exécutés.
+
+### Service headless historique
+
 | Variable | Défaut | Usage |
 | --- | --- | --- |
 | `FW_SDG_VOLUME_ROOT` | `/workspace/fireviewer-sdg` | racine persistante des entrées et productions |
@@ -220,3 +246,51 @@ La console est ensuite disponible sur `http://127.0.0.1:8000/console`. Le jeton 
 dans le formulaire de connexion ; il n’est jamais placé dans l’URL. Le pilote peut rester bloqué
 si les assets SimReady exacts et revus sont incomplets : ce blocage est volontaire et aucun
 placeholder ou cas partiel n’est alors produit.
+
+## Portefeuille Omniverse fictif 4 × 5
+
+Le catalogue `livrable_20_zones_france_omniverse` est une source externe en
+lecture seule et reste hors Git. Il ne définit pas les vingt scènes finales :
+l’opérateur doit fournir exactement quatre de ses IDs dans
+`FW_OMNI_BASE_ZONES`, sans sélection automatique, puis cinq compositions sont
+produites pour chacune.
+
+Chaque variante conserve les comptes par famille, les identifiants stables,
+les références et les échelles des assets. Elle réarrange de façon cohérente la
+forêt, les groupes bâtis et les routes. Le terrain utilise un PBR sans arbres,
+bâtiments ou routes incrustés : une orthophoto brute ne peut pas servir de
+texture visible, afin d’éviter toute imagerie fantôme.
+
+La bibliothèque PBR est partagée, mais les masques, champs de relief et
+matériaux restent liés aux payloads de leur tuile. Un graphe shader global
+agrégeant les entrées spatiales des 400 tuiles n’est pas un résultat accepté.
+
+Une scène finale possède exactement 400 tuiles, 400 payloads de terrain et
+400 payloads d’objets pour chacun des niveaux `HERO`, `MID` et `FAR`. Les tuiles
+visibles utilisent `HERO` ou `MID`, le reste garde `FAR`, et le terrain reste
+présent sur toute la zone.
+
+Le code prépare actuellement :
+
+- le prévol RTX PRO 6000/96 Go et RAM effective/cgroup ;
+- l’environnement LiDAR et le bundle d’assets USD/PBR verrouillé ;
+- l’index 4 × 5, le build tuilé de la base pilote et les gates automatiques ;
+- la planification et l’authoring natif des vingt variantes via
+  `fireviewer_sdg.native_variant_campaign`.
+
+Restent à exécuter sur le pod : les téléchargements réels, les quatre builds de
+base, l’authoring des vingt USD et leur contrôle dans le véritable Editor. Une
+preuve automatique ne remplace pas cette inspection. Toute tuile vide, rupture
+de terrain ou de matériau, forêt anormalement clairsemée, imagerie fantôme,
+objet empilé ou flottant, route ou eau incohérente impose le rejet de la scène.
+
+`bash tools/runpod/setup-omniverse-pod.sh prepare` n’ouvre pas l’Editor et ne
+lance aucun feu. La revue se lance séparément avec la phase `review`. Une scène
+finale complète doit être ouverte et acceptée humainement avant toute
+simulation ; l’acceptation est liée par hash au runtime, au catalogue, aux
+assets et au root USD courants.
+
+Les LiDAR, datasets, bundles, caches, USD, rendus, résultats et archives restent
+sur le volume persistant ou dans le stockage d’artefacts. Les répertoires de
+production et les formats lourds sont ignorés par Git ; seuls le code, les
+contrats textuels, les tests et les exemples sans secret doivent être suivis.

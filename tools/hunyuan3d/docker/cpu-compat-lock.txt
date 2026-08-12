@@ -1,0 +1,5 @@
+# Kornia 0.8.3 accepts kornia-rs >= 0.1.9. Versions 0.1.13+ enable a
+# libjpeg-turbo wheel that can execute unsupported SIMD instructions during
+# module import on older/low-cost RunPod host CPUs.
+kornia==0.8.3
+kornia-rs==0.1.10

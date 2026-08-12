@@ -13,8 +13,10 @@ manifest override handled by :mod:`fireviewer_sdg.ign_catalog`.
 
 from __future__ import annotations
 
+import csv
 import hashlib
 import json
+import math
 import os
 import re
 import time
@@ -22,7 +24,6 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
-import csv
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path, PurePosixPath
@@ -70,9 +71,37 @@ USD_SUFFIXES = frozenset({".usd", ".usda", ".usdc", ".usdz"})
 MAX_DISCOVERY_DEPTH = 7
 MAX_DISCOVERY_DIRECTORIES = 5_000
 MAX_DISCOVERY_ASSETS = 30_000
-MIN_VEGETATION_VARIANTS = 6
-MANIFEST_SCHEMA_VERSION = 1
-MANIFEST_PROFILE = "fireviewer_simready_photoreal_hd_v2"
+MANIFEST_SCHEMA_VERSION = 3
+MANIFEST_PROFILE = "fireviewer_simready_photoreal_hd_v3"
+PHOTOREAL_FAMILY_MINIMUMS: dict[str, dict[str, int]] = {
+    "vegetation": {
+        "trees": 8,
+        "shrubs": 4,
+        "understory": 4,
+    },
+    "buildings": {
+        "habitat": 4,
+        "agricultural": 2,
+        "industrial": 2,
+        "annex": 2,
+    },
+}
+PHOTOREAL_MIN_LOD_LEVELS: dict[str, int] = {
+    "vegetation.trees": 3,
+    "vegetation.shrubs": 3,
+    "vegetation.understory": 2,
+    "buildings.habitat": 2,
+    "buildings.agricultural": 2,
+    "buildings.industrial": 2,
+    "buildings.annex": 2,
+}
+PHOTOREAL_LIBRARY_POLICY = {
+    "primitive_fallbacks": "forbidden",
+    "procedural_asset_fallbacks": "forbidden",
+    "non_uniform_asset_scaling": "forbidden",
+    "prototype_selection": "family_weighted_without_single_asset_dominance",
+    "maximum_single_prototype_share": 0.25,
+}
 NVIDIA_ASSET_LICENSE_ID = (
     "LicenseRef-NVIDIA-Isaac-Sim-Additional-Software-and-Materials"
 )
@@ -122,27 +151,93 @@ _VEGETATION_TERMS = frozenset(
         "vegetation",
     }
 )
+_VEGETATION_FAMILY_TERMS: dict[str, frozenset[str]] = {
+    "trees": frozenset(
+        {
+            "apple",
+            "birch",
+            "cedar",
+            "cypress",
+            "fir",
+            "oak",
+            "pine",
+            "poplar",
+            "spruce",
+            "tree",
+        }
+    ),
+    "shrubs": frozenset(
+        {
+            "bush",
+            "hawthorn",
+            "hedge",
+            "juniper",
+            "scrub",
+            "shrub",
+        }
+    ),
+    "understory": frozenset(
+        {
+            "fern",
+            "flower",
+            "grass",
+            "groundcover",
+            "herb",
+            "plant",
+            "reed",
+            "understory",
+            "weed",
+        }
+    ),
+}
 _INDOOR_VEGETATION_TERMS = frozenset(
     {"bonsai", "indoor", "office", "potted", "warehouse"}
 )
-_RURAL_BUILDING_TERMS = frozenset(
-    {
-        "agricultural_building",
-        "barn",
-        "cabin",
-        "cottage",
-        "farm_building",
-        "farm_house",
-        "farmhouse",
-        "house",
-        "rural_building",
-        "shed",
-        "stable",
-    }
-)
-_NON_RURAL_BUILDING_TERMS = frozenset(
-    {"industrial", "office", "skyscraper", "warehouse"}
-)
+_BUILDING_FAMILY_TERMS: dict[str, frozenset[str]] = {
+    "habitat": frozenset(
+        {
+            "apartment",
+            "cabin",
+            "cottage",
+            "farmhouse",
+            "house",
+            "residence",
+            "residential",
+            "villa",
+        }
+    ),
+    "agricultural": frozenset(
+        {
+            "agricultural",
+            "barn",
+            "farm",
+            "farmhouse",
+            "granary",
+            "silo",
+            "stable",
+        }
+    ),
+    "industrial": frozenset(
+        {
+            "factory",
+            "hangar",
+            "industrial",
+            "plant",
+            "warehouse",
+            "workshop",
+        }
+    ),
+    "annex": frozenset(
+        {
+            "annex",
+            "carport",
+            "garage",
+            "outbuilding",
+            "parking",
+            "shed",
+        }
+    ),
+}
 _ACTOR_MATCHERS: dict[str, Callable[[str, set[str]], bool]] = {
     "sdis_vehicle": lambda normalized, tokens: (
         "sdis" in tokens
@@ -455,7 +550,7 @@ def cache_official_nvidia_indexes(
     *,
     volume_root: Path,
     asset_root: str = DEFAULT_NVIDIA_ASSET_ROOT,
-    reader: Callable[[str], bytes] = _omni_client_read_bytes,
+    reader: Callable[[str], bytes] = _http_read_bytes,
 ) -> dict[str, Any]:
     """Cache the two bounded official indexes used for environment discovery."""
 
@@ -666,10 +761,32 @@ def _rivermark_relative_path(uri: str, *, asset_root: str) -> str:
     return "/".join(parts)
 
 
+def _metadata_validation_sha256(metadata: dict[str, Any]) -> str:
+    validated = {
+        key: metadata[key]
+        for key in (
+            "native_dimensions_m",
+            "ground_anchor_m",
+            "anchor_validation",
+            "lod",
+            "materials",
+            "placement",
+        )
+    }
+    return hashlib.sha256(
+        json.dumps(
+            validated,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest()
+
+
 def _inspect_local_usd_metadata(path: Path) -> dict[str, Any]:
     try:
         import isaacsim  # noqa: F401 - exposes the bundled pxr modules
-        from pxr import Usd, UsdGeom
+        from pxr import Usd, UsdGeom, UsdShade, UsdUtils
     except ImportError as exc:  # pragma: no cover - Isaac runtime gate
         raise RuntimeError(
             "local NVIDIA USD inspection requires the pinned Isaac runtime"
@@ -688,10 +805,344 @@ def _inspect_local_usd_metadata(path: Path) -> dict[str, Any]:
         )
     if up_axis not in {"Y", "Z"}:
         raise RuntimeError(f"materialized NVIDIA USD has invalid upAxis: {up_axis}")
-    return {
+    bbox_cache = UsdGeom.BBoxCache(
+        Usd.TimeCode.Default(),
+        [UsdGeom.Tokens.default_, UsdGeom.Tokens.render],
+        useExtentsHint=True,
+    )
+    bounds = bbox_cache.ComputeWorldBound(default_prim).ComputeAlignedRange()
+    minimum = bounds.GetMin()
+    maximum = bounds.GetMax()
+    root_values = [
+        *(float(minimum[index]) for index in range(3)),
+        *(float(maximum[index]) for index in range(3)),
+    ]
+    if bounds.IsEmpty() or any(
+        not math.isfinite(value) or abs(value) >= 1.0e30
+        for value in root_values
+    ):
+        # Some official vegetation layers author a parent Mesh with an empty
+        # sentinel extent and place the actual meshes below it.  BBoxCache
+        # legally stops at that parent Boundable, so recover the union from
+        # renderable descendants instead of rejecting a populated asset.
+        fallback_cache = UsdGeom.BBoxCache(
+            Usd.TimeCode.Default(),
+            [UsdGeom.Tokens.default_, UsdGeom.Tokens.render],
+            useExtentsHint=False,
+        )
+        recovered_minimum = [math.inf, math.inf, math.inf]
+        recovered_maximum = [-math.inf, -math.inf, -math.inf]
+        recovered_count = 0
+        for prim in stage.Traverse():
+            if not prim.IsA(UsdGeom.Gprim):
+                continue
+            candidate = fallback_cache.ComputeWorldBound(
+                prim
+            ).ComputeAlignedRange()
+            if candidate.IsEmpty():
+                continue
+            candidate_minimum = candidate.GetMin()
+            candidate_maximum = candidate.GetMax()
+            values = [
+                *(float(candidate_minimum[index]) for index in range(3)),
+                *(float(candidate_maximum[index]) for index in range(3)),
+            ]
+            if any(
+                not math.isfinite(value) or abs(value) >= 1.0e30
+                for value in values
+            ):
+                continue
+            recovered_count += 1
+            for index in range(3):
+                recovered_minimum[index] = min(
+                    recovered_minimum[index],
+                    float(candidate_minimum[index]),
+                )
+                recovered_maximum[index] = max(
+                    recovered_maximum[index],
+                    float(candidate_maximum[index]),
+                )
+        if recovered_count == 0:
+            raise RuntimeError(
+                f"materialized NVIDIA USD has no usable renderable bounds: {path}"
+            )
+        minimum = recovered_minimum
+        maximum = recovered_maximum
+    source_dimensions = [
+        float(maximum[index] - minimum[index]) * meters_per_unit
+        for index in range(3)
+    ]
+    if up_axis == "Z":
+        dimensions = source_dimensions
+        # Bottom-centre expressed in the wrapper's final Z-up metre space.
+        anchor = [
+            float(minimum[0] + maximum[0]) * 0.5 * meters_per_unit,
+            float(minimum[1] + maximum[1]) * 0.5 * meters_per_unit,
+            float(minimum[2]) * meters_per_unit,
+        ]
+    else:
+        # +90 degrees around X maps source +Y to wrapper +Z and source +Z to
+        # wrapper -Y.  Dimension and anchor validation must use that same
+        # transform; treating source Z as height made Y-up assets float and
+        # produced meaningless family compatibility checks.
+        dimensions = [
+            source_dimensions[0],
+            source_dimensions[2],
+            source_dimensions[1],
+        ]
+        anchor = [
+            float(minimum[0] + maximum[0]) * 0.5 * meters_per_unit,
+            -float(minimum[2] + maximum[2]) * 0.5 * meters_per_unit,
+            float(minimum[1]) * meters_per_unit,
+        ]
+    if (
+        any(not math.isfinite(value) or value <= 0.0001 for value in dimensions)
+        or any(not math.isfinite(value) for value in anchor)
+    ):
+        raise RuntimeError(
+            f"materialized NVIDIA USD has unusable native bounds: {path}"
+        )
+
+    variant_lods: set[str] = set()
+    hierarchy_lods: set[str] = set()
+    material_prim_count = 0
+    bound_material_prim_count = 0
+    for prim in stage.Traverse():
+        if prim.IsA(UsdShade.Material):
+            material_prim_count += 1
+        if prim.IsA(UsdGeom.Gprim):
+            material, _relationship = (
+                UsdShade.MaterialBindingAPI(prim).ComputeBoundMaterial()
+            )
+            if material and material.GetPrim().IsValid():
+                bound_material_prim_count += 1
+        for variant_name in prim.GetVariantSets().GetNames():
+            if "lod" not in variant_name.casefold():
+                continue
+            variant_set = prim.GetVariantSet(variant_name)
+            for value in variant_set.GetVariantNames():
+                variant_lods.add(f"{prim.GetPath()}:{variant_name}={value}")
+        if re.fullmatch(r"(?i)lod[_-]?\d+", prim.GetName()):
+            hierarchy_lods.add(str(prim.GetPath()))
+    if variant_lods:
+        lod_strategy = "native_variant_set"
+        lod_levels = sorted(variant_lods)
+    elif hierarchy_lods:
+        lod_strategy = "native_prim_hierarchy"
+        lod_levels = sorted(hierarchy_lods)
+    else:
+        lod_strategy = "source_default_only"
+        lod_levels = [str(default_prim.GetPath())]
+
+    _layers, resolved_assets, unresolved_assets = UsdUtils.ComputeAllDependencies(
+        str(path)
+    )
+    unresolved = sorted(
+        {
+            str(asset)
+            for asset in unresolved_assets
+            if str(asset).strip()
+            and not _is_builtin_omniverse_mdl_module(str(asset))
+        }
+    )
+    metadata: dict[str, Any] = {
         "source_meters_per_unit": meters_per_unit,
         "source_up_axis": up_axis,
+        "native_dimensions_m": {
+            "x": dimensions[0],
+            "y": dimensions[1],
+            "z": dimensions[2],
+        },
+        "ground_anchor_m": anchor,
+        "anchor_validation": {
+            "state": "passed",
+            "policy": "native_bbox_bottom_center",
+        },
+        "lod": {
+            "state": "passed",
+            "strategy": lod_strategy,
+            "levels": lod_levels,
+            "level_count": len(lod_levels),
+        },
+        "materials": {
+            "state": (
+                "passed"
+                if (
+                    material_prim_count > 0
+                    and bound_material_prim_count > 0
+                    and not unresolved
+                )
+                else "failed"
+            ),
+            "material_prim_count": material_prim_count,
+            "bound_material_prim_count": bound_material_prim_count,
+            "resolved_asset_dependency_count": len(resolved_assets),
+            "unresolved_dependencies": unresolved,
+        },
+        "placement": {
+            "grounding": "native_anchor",
+            "scale_policy": "uniform_only",
+            "non_uniform_scale_allowed": False,
+            "minimum_uniform_scale": 0.8,
+            "maximum_uniform_scale": 1.25,
+        },
     }
+    metadata["metadata_validation_sha256"] = _metadata_validation_sha256(metadata)
+    return metadata
+
+
+def _is_builtin_omniverse_mdl_module(raw_path: str) -> bool:
+    """Identify MDL modules supplied by every supported Kit runtime.
+
+    ``UsdUtils.ComputeAllDependencies`` reports bare MDL module names as
+    unresolved filesystem paths because MDL search paths are resolved by Kit,
+    not by USD.  Only the explicit NVIDIA core module used by the Rivermark
+    thumbnail rigs is accepted here; project or asset-relative MDL files must
+    still be present in the locked standalone cache.
+    """
+
+    normalized = raw_path.strip().replace("\\", "/")
+    return normalized == "OmniPBR.mdl"
+
+
+_TECHNICAL_RENDER_PRIM_NAMES = frozenset(
+    {
+        "tagging",
+        "thumbrig",
+        "thumbnail",
+        "thumbnails",
+    }
+)
+
+
+def _is_technical_render_prim_path(raw_path: object) -> bool:
+    parts = {
+        part.casefold()
+        for part in PurePosixPath(str(raw_path)).parts
+        if part != "/"
+    }
+    return bool(parts & _TECHNICAL_RENDER_PRIM_NAMES)
+
+
+def _inspect_editable_nvidia_payload(path: Path) -> dict[str, Any]:
+    """Prove that a USD exposes editable, material-bound provider geometry."""
+
+    try:
+        import isaacsim  # noqa: F401 - exposes the bundled pxr modules
+        from pxr import Usd, UsdGeom, UsdShade
+    except ImportError as exc:  # pragma: no cover - Isaac runtime gate
+        raise RuntimeError(
+            "editable NVIDIA payload inspection requires the pinned Isaac runtime"
+        ) from exc
+    stage = Usd.Stage.Open(str(path), load=Usd.Stage.LoadAll)
+    if stage is None:
+        return {
+            "state": "rejected",
+            "reason": "open_failed",
+            "editable_mesh_count": 0,
+            "material_bound_mesh_count": 0,
+            "face_count": 0,
+        }
+    default_prim = stage.GetDefaultPrim()
+    editable_mesh_count = 0
+    material_bound_mesh_count = 0
+    face_count = 0
+    for prim in stage.Traverse():
+        if (
+            not prim.IsActive()
+            or not prim.IsDefined()
+            or not prim.IsA(UsdGeom.Mesh)
+            or _is_technical_render_prim_path(prim.GetPath())
+        ):
+            continue
+        mesh = UsdGeom.Mesh(prim)
+        points = mesh.GetPointsAttr().Get()
+        face_vertex_counts = mesh.GetFaceVertexCountsAttr().Get()
+        if (
+            points is None
+            or len(points) < 4
+            or face_vertex_counts is None
+            or len(face_vertex_counts) < 1
+        ):
+            continue
+        editable_mesh_count += 1
+        face_count += len(face_vertex_counts)
+        material, _relationship = UsdShade.MaterialBindingAPI(
+            prim
+        ).ComputeBoundMaterial()
+        has_material = bool(material and material.GetPrim().IsValid())
+        if not has_material:
+            for subset in UsdShade.MaterialBindingAPI(
+                prim
+            ).GetMaterialBindSubsets():
+                subset_material, _ = UsdShade.MaterialBindingAPI(
+                    subset.GetPrim()
+                ).ComputeBoundMaterial()
+                if subset_material and subset_material.GetPrim().IsValid():
+                    has_material = True
+                    break
+        material_bound_mesh_count += int(has_material)
+    passed = bool(
+        default_prim
+        and default_prim.IsValid()
+        and editable_mesh_count > 0
+        and material_bound_mesh_count > 0
+        and face_count >= 4
+    )
+    return {
+        "state": "passed" if passed else "rejected",
+        "reason": "" if passed else "no_editable_material_bound_geometry",
+        "default_prim": (
+            str(default_prim.GetPath())
+            if default_prim and default_prim.IsValid()
+            else ""
+        ),
+        "editable_mesh_count": editable_mesh_count,
+        "material_bound_mesh_count": material_bound_mesh_count,
+        "face_count": face_count,
+    }
+
+
+def _select_editable_nvidia_payload(
+    *,
+    main_path: Path,
+    inspections: dict[Path, dict[str, Any]],
+    usd_dependencies: dict[Path, set[Path]],
+) -> Path:
+    """Choose the single editable composition root, never a backing layer."""
+
+    main = main_path.resolve()
+    if inspections.get(main, {}).get("state") == "passed":
+        return main
+    qualified = {
+        path.resolve()
+        for path, inspection in inspections.items()
+        if inspection.get("state") == "passed"
+    }
+    referenced_backing_layers = {
+        dependency.resolve()
+        for candidate in qualified
+        for dependency in usd_dependencies.get(candidate, set())
+        if dependency.resolve() in qualified and dependency.resolve() != candidate
+    }
+    composition_roots = qualified - referenced_backing_layers
+    if len(composition_roots) != 1:
+        diagnostics = {
+            str(path): {
+                "inspection": inspections[path],
+                "usd_dependencies": sorted(
+                    str(dependency)
+                    for dependency in usd_dependencies.get(path, set())
+                ),
+            }
+            for path in sorted(inspections, key=str)
+        }
+        raise RuntimeError(
+            "selected NVIDIA layer exposes no unique editable renderable "
+            f"composition root: main={main}, diagnostics="
+            f"{json.dumps(diagnostics, sort_keys=True)}"
+        )
+    return next(iter(composition_roots))
 
 
 def materialize_indexed_nvidia_assets(
@@ -703,6 +1154,14 @@ def materialize_indexed_nvidia_assets(
 ) -> list[dict[str, Any]]:
     """Cache selected immutable NVIDIA folders and hash every dependency."""
 
+    try:
+        import isaacsim  # noqa: F401 - exposes the bundled pxr modules
+        from pxr import UsdUtils
+    except ImportError as exc:  # pragma: no cover - Isaac runtime gate
+        raise RuntimeError(
+            "indexed NVIDIA materialization requires the pinned Isaac runtime"
+        ) from exc
+
     volume = volume_root.resolve()
     _manifest_path, file_list_path, _lock = _verified_index_paths(
         volume_root=volume,
@@ -713,12 +1172,31 @@ def materialize_indexed_nvidia_assets(
         for line in file_list_path.read_text(encoding="utf-8-sig").splitlines()
         if line.strip()
     ]
+    indexed_file_set = set(indexed_files)
     base_uri = (
         f"{_validate_official_root(asset_root)}/{RIVERMARK_CONTENT_PATH}"
     )
     cache_root = volume / "input" / "nvidia-asset-cache"
     materialized: list[dict[str, Any]] = []
     selected = list(assets)
+
+    def download_relative(relative: str) -> Path:
+        if relative not in indexed_file_set:
+            raise RuntimeError(
+                "referenced NVIDIA dependency is absent from the locked "
+                f"Rivermark index: {relative}"
+            )
+        destination = (cache_root / Path(relative)).resolve()
+        if cache_root.resolve() not in destination.parents:
+            raise RuntimeError(f"unsafe NVIDIA dependency path: {relative}")
+        if not destination.is_file():
+            remote_uri = (
+                f"{base_uri}/"
+                f"{urllib.parse.quote(relative, safe='/%:@+-._~')}"
+            )
+            _atomic_write_bytes(destination, reader(remote_uri))
+        return destination
+
     for asset_index, asset in enumerate(selected, start=1):
         relative_main = _rivermark_relative_path(
             str(asset["uri"]),
@@ -737,11 +1215,8 @@ def materialize_indexed_nvidia_assets(
             raise RuntimeError(
                 f"selected NVIDIA asset is absent from its locked index: {relative_main}"
             )
-        locked_files: list[dict[str, Any]] = []
+        materialized_paths: set[Path] = set()
         for file_index, relative in enumerate(dependencies, start=1):
-            destination = (cache_root / Path(relative)).resolve()
-            if cache_root.resolve() not in destination.parents:
-                raise RuntimeError(f"unsafe NVIDIA dependency path: {relative}")
             write_progress(
                 volume,
                 phase="official_nvidia_asset_download",
@@ -755,30 +1230,154 @@ def materialize_indexed_nvidia_assets(
                 files_completed=file_index - 1,
                 files_total=len(dependencies),
             )
-            if not destination.is_file():
-                remote_uri = (
-                    f"{base_uri}/"
-                    f"{urllib.parse.quote(relative, safe='/%:@+-._~')}"
-                )
-                _atomic_write_bytes(destination, reader(remote_uri))
-            locked_files.append(
-                {
-                    "path": os.path.relpath(destination, volume).replace("\\", "/"),
-                    "sha256": _sha256(destination),
-                    "size_bytes": destination.stat().st_size,
-                }
-            )
+            materialized_paths.add(download_relative(relative))
         main_path = (cache_root / Path(relative_main)).resolve()
+
+        # Rivermark's folder listing is not a dependency graph.  Complete
+        # structures reference shared nv_core MDL files outside their own
+        # folder, so resolve the USD graph iteratively against the same locked
+        # provider index.  This keeps the final bundle standalone instead of
+        # silently accepting unresolved materials.
+        for _iteration in range(6):
+            _layers, resolved_assets, unresolved_assets = (
+                UsdUtils.ComputeAllDependencies(str(main_path))
+            )
+            for raw_path in resolved_assets:
+                dependency = Path(str(raw_path)).resolve()
+                if dependency.is_file() and (
+                    dependency == cache_root.resolve()
+                    or cache_root.resolve() in dependency.parents
+                ):
+                    materialized_paths.add(dependency)
+            missing_relatives: list[str] = []
+            for raw_path in unresolved_assets:
+                if _is_builtin_omniverse_mdl_module(str(raw_path)):
+                    continue
+                dependency = Path(str(raw_path)).resolve()
+                if cache_root.resolve() not in dependency.parents:
+                    raise RuntimeError(
+                        "indexed NVIDIA dependency escaped the local cache: "
+                        f"{raw_path}"
+                    )
+                relative = dependency.relative_to(cache_root.resolve()).as_posix()
+                if relative not in indexed_file_set:
+                    raise RuntimeError(
+                        "indexed NVIDIA dependency is absent from the locked "
+                        f"provider index: {relative}"
+                    )
+                if not dependency.is_file():
+                    missing_relatives.append(relative)
+            if not missing_relatives:
+                break
+            with ThreadPoolExecutor(max_workers=8) as pool:
+                materialized_paths.update(
+                    pool.map(
+                        download_relative,
+                        sorted(set(missing_relatives)),
+                    )
+                )
+        else:
+            raise RuntimeError(
+                "indexed NVIDIA dependency resolution did not converge: "
+                f"{relative_main}"
+            )
+
+        sibling_usd_paths = sorted(
+            {
+                path.resolve()
+                for path in materialized_paths
+                if path.parent == main_path.parent
+                and path.suffix.casefold() in {".usd", ".usda", ".usdc"}
+            },
+            key=str,
+        )
+        inspections = {
+            path: _inspect_editable_nvidia_payload(path)
+            for path in sibling_usd_paths
+        }
+        usd_dependencies: dict[Path, set[Path]] = {}
+        for path, inspection in inspections.items():
+            if inspection.get("state") != "passed":
+                usd_dependencies[path] = set()
+                continue
+            layers, _resolved_assets, _unresolved_assets = (
+                UsdUtils.ComputeAllDependencies(str(path))
+            )
+            usd_dependencies[path] = {
+                Path(str(getattr(layer, "realPath", "") or "")).resolve()
+                for layer in layers
+                if str(getattr(layer, "realPath", "") or "").strip()
+            }
+        editable_main_path = _select_editable_nvidia_payload(
+            main_path=main_path,
+            inspections=inspections,
+            usd_dependencies=usd_dependencies,
+        )
+        # The originally indexed layer may only contain provider tagging and
+        # therefore cannot reveal external dependencies of the editable
+        # composition root. Resolve that selected graph before computing the
+        # standalone content lock.
+        for _iteration in range(6):
+            _layers, resolved_assets, unresolved_assets = (
+                UsdUtils.ComputeAllDependencies(str(editable_main_path))
+            )
+            for raw_path in resolved_assets:
+                dependency = Path(str(raw_path)).resolve()
+                if dependency.is_file() and (
+                    dependency == cache_root.resolve()
+                    or cache_root.resolve() in dependency.parents
+                ):
+                    materialized_paths.add(dependency)
+            missing_relatives = []
+            for raw_path in unresolved_assets:
+                if _is_builtin_omniverse_mdl_module(str(raw_path)):
+                    continue
+                dependency = Path(str(raw_path)).resolve()
+                if cache_root.resolve() not in dependency.parents:
+                    raise RuntimeError(
+                        "editable NVIDIA payload dependency escaped the local "
+                        f"cache: {raw_path}"
+                    )
+                relative = dependency.relative_to(cache_root.resolve()).as_posix()
+                if relative not in indexed_file_set:
+                    raise RuntimeError(
+                        "editable NVIDIA payload dependency is absent from the "
+                        f"locked provider index: {relative}"
+                    )
+                if not dependency.is_file():
+                    missing_relatives.append(relative)
+            if not missing_relatives:
+                break
+            with ThreadPoolExecutor(max_workers=8) as pool:
+                materialized_paths.update(
+                    pool.map(
+                        download_relative,
+                        sorted(set(missing_relatives)),
+                    )
+                )
+        else:
+            raise RuntimeError(
+                "editable NVIDIA payload dependency resolution did not "
+                f"converge: {editable_main_path}"
+            )
+        locked_files = [
+            {
+                "path": os.path.relpath(path, volume).replace("\\", "/"),
+                "sha256": _sha256(path),
+                "size_bytes": path.stat().st_size,
+            }
+            for path in sorted(materialized_paths)
+        ]
         content_lock = hashlib.sha256(
             json.dumps(locked_files, sort_keys=True).encode("utf-8")
         ).hexdigest()
         materialized.append(
             {
                 **asset,
-                **_inspect_local_usd_metadata(main_path),
-                "local_path": main_path,
-                "provider_hash": _sha256(main_path),
-                "provider_size_bytes": main_path.stat().st_size,
+                **_inspect_local_usd_metadata(editable_main_path),
+                "local_path": editable_main_path,
+                "provider_hash": _sha256(editable_main_path),
+                "provider_size_bytes": editable_main_path.stat().st_size,
                 "dependency_count": len(locked_files),
                 "content_lock_sha256": content_lock,
                 "materialized_files": locked_files,
@@ -971,6 +1570,7 @@ def materialize_official_vegetation_assets(
                 "provider_size_bytes": main_path.stat().st_size,
                 "dependency_count": len(locked_files) - 1,
                 "content_lock_sha256": content_lock,
+                "materialized_files": locked_files,
                 "thumbnail_path": thumbnail_path,
             }
         )
@@ -1072,108 +1672,282 @@ def _asset_family_identity(asset: dict[str, Any]) -> str:
     return f"{str(Path(decoded).parent).lower()}/{stem}"
 
 
+def _classify_vegetation_family(
+    normalized: str,
+    tokens: set[str],
+    decoded_uri: str,
+) -> str | None:
+    if tokens & _INDOOR_VEGETATION_TERMS:
+        return None
+    # NVIDIA's official vegetation library stores several ground-cover
+    # species (ferns, grasses and lilies) below ``Shrub`` or
+    # ``Plant_Tropical``.  The canonical asset name is more precise than the
+    # broad storage folder and prevents stale Rivermark stand-ins from being
+    # selected merely to fill the understory quota.
+    if tokens & {
+        "fern",
+        "flower",
+        "grass",
+        "groundcover",
+        "herb",
+        "lily",
+        "reed",
+        "understory",
+        "weed",
+    }:
+        return "understory"
+    if "/trees/" in decoded_uri:
+        return "trees"
+    if "/shrub/" in decoded_uri or "/shrubs/" in decoded_uri:
+        return "shrubs"
+    if any(
+        marker in decoded_uri
+        for marker in ("/grass/", "/herb/", "/plants/", "/understory/")
+    ):
+        return "understory"
+    # ``Plant_Tropical`` is only a provider storage taxonomy.  Treating its
+    # generic ``plant`` token as a semantic family promoted palms and ornamental
+    # trees to ground cover.  Only the explicit ground-cover names handled
+    # above are suitable for the understory contract.
+    if "/plant_tropical/" in decoded_uri:
+        return None
+    scores = {
+        family: len(tokens & terms)
+        for family, terms in _VEGETATION_FAMILY_TERMS.items()
+    }
+    best = max(scores, key=lambda family: scores[family])
+    return best if scores[best] > 0 else None
+
+
+def _classify_building_family(
+    normalized: str,
+    tokens: set[str],
+    decoded_uri: str,
+) -> str | None:
+    structure_path = any(
+        marker in decoded_uri
+        for marker in (
+            "/architecture/",
+            "/building/",
+            "/buildings/",
+            "/props_structures/",
+            "/structure/",
+            "/structures/",
+        )
+    )
+    structure_nouns = frozenset(
+        {
+            "annex",
+            "apartment",
+            "barn",
+            "building",
+            "cabin",
+            "carport",
+            "cottage",
+            "factory",
+            "farmhouse",
+            "garage",
+            "hangar",
+            "house",
+            "outbuilding",
+            "residence",
+            "shed",
+            "silo",
+            "stable",
+            "structure",
+            "villa",
+            "warehouse",
+            "workshop",
+        }
+    )
+    # A directory named ``Warehouse`` contains hundreds of rails, pallets,
+    # pipes and barriers.  Classifying those child props as industrial
+    # buildings produced a formally complete but visibly absurd library.  The
+    # canonical USD filename itself must identify a complete structure.
+    stem = Path(urllib.parse.unquote(decoded_uri)).stem
+    ordered_stem_tokens = [
+        token
+        for token in re.sub(r"[^a-z0-9]+", "_", stem).split("_")
+        if token
+    ]
+    stem_tokens = set(ordered_stem_tokens)
+    non_building_components = frozenset(
+        {
+            "barrier",
+            "beam",
+            "box",
+            "column",
+            "container",
+            "cube",
+            "door",
+            "equipment",
+            "fence",
+            "gate",
+            "pallet",
+            "panel",
+            "pipe",
+            "rail",
+            "roof",
+            "shelf",
+            "stair",
+            "wall",
+            "window",
+        }
+    )
+    if stem_tokens & non_building_components:
+        return None
+    descriptive_suffixes = frozenset(
+        {
+            "black",
+            "brick",
+            "concrete",
+            "large",
+            "metal",
+            "modern",
+            "old",
+            "red",
+            "small",
+            "stone",
+            "white",
+            "wood",
+            "wooden",
+        }
+    )
+    substantive = [
+        token
+        for token in ordered_stem_tokens
+        if token not in {"asset", "mesh", "model", "prop", "sm", "usd"}
+        and token not in descriptive_suffixes
+        and not re.fullmatch(r"[a-z]?\d+", token)
+    ]
+    if not substantive or substantive[-1] not in structure_nouns:
+        return None
+    if not structure_path and not tokens & structure_nouns:
+        return None
+    scores = {
+        family: len(tokens & terms)
+        + sum(1 for term in terms if term in normalized)
+        for family, terms in _BUILDING_FAMILY_TERMS.items()
+    }
+    for priority in ("industrial", "agricultural", "annex", "habitat"):
+        if scores[priority] == max(scores.values()) and scores[priority] > 0:
+            return priority
+    return None
+
+
 def select_simready_assets(
     candidates: Iterable[dict[str, Any]],
 ) -> dict[str, Any]:
-    """Select unique environment assets and exact-semantic response assets."""
+    """Select a diverse, family-complete photoreal environment library."""
 
     inventory = sorted(candidates, key=lambda asset: str(asset["uri"]))
     selected_uris: set[str] = set()
     selected_identities: set[str] = set()
-    vegetation_candidates: list[tuple[int, dict[str, Any]]] = []
-    building_candidates: list[tuple[int, dict[str, Any]]] = []
+    vegetation_candidates: dict[str, list[tuple[int, dict[str, Any]]]] = {
+        family: [] for family in PHOTOREAL_FAMILY_MINIMUMS["vegetation"]
+    }
+    building_candidates: dict[str, list[tuple[int, dict[str, Any]]]] = {
+        family: [] for family in PHOTOREAL_FAMILY_MINIMUMS["buildings"]
+    }
     for asset in inventory:
         normalized, tokens = _normalize_uri(str(asset["uri"]))
         decoded_uri = urllib.parse.unquote(str(asset["uri"])).lower()
+        # The official Norway Spruce layer authors material:binding
+        # relationships without applying MaterialBindingAPI.  Current USD
+        # therefore ignores every one of its 41 bindings.  Prefer another
+        # real official tree instead of accepting a visibly unshaded asset or
+        # mutating NVIDIA's source layer.
+        if decoded_uri.endswith("/norway_spruce.usd"):
+            continue
         if any(forbidden in normalized for forbidden in _SKIP_PATH_PARTS):
             continue
-        is_official_vegetation = (
-            "/assets/vegetation/" in decoded_uri
-            and any(
-                family in decoded_uri
-                for family in ("/shrub/", "/trees/")
-            )
-        )
+        is_official_vegetation = "/assets/vegetation/" in decoded_uri
         if (
             (tokens & _VEGETATION_TERMS or is_official_vegetation)
             and not tokens & _INDOOR_VEGETATION_TERMS
         ):
-            vegetation_candidates.append(
-                (_environment_score(asset, set(_VEGETATION_TERMS)), asset)
+            family = _classify_vegetation_family(
+                normalized,
+                tokens,
+                decoded_uri,
             )
-        if (
-            (
-                bool(
-                    tokens
-                    & {
-                        "barn",
-                        "cabin",
-                        "cottage",
-                        "farmhouse",
-                        "house",
-                        "shed",
-                        "stable",
-                    }
+            if family is not None:
+                vegetation_candidates[family].append(
+                    (_environment_score(asset, set(_VEGETATION_TERMS)), asset)
                 )
-                or any(
-                    term in normalized
-                    for term in (
-                        "agricultural_building",
-                        "farm_building",
-                        "farm_house",
-                        "rural_building",
-                    )
+        building_family = _classify_building_family(
+            normalized,
+            tokens,
+            decoded_uri,
+        )
+        if building_family is not None:
+            building_candidates[building_family].append(
+                (
+                    _environment_score(
+                        asset,
+                        set(_BUILDING_FAMILY_TERMS[building_family]),
+                    ),
+                    asset,
                 )
             )
-            and not tokens & _NON_RURAL_BUILDING_TERMS
-        ):
-            building_candidates.append(
-                (_environment_score(asset, set(_RURAL_BUILDING_TERMS)), asset)
-            )
-    vegetation = []
-    for _score, asset in sorted(
-        vegetation_candidates,
-        key=lambda item: (
-            _preferred_rank(
-                str(item[1]["uri"]),
-                PREFERRED_VEGETATION_SUFFIXES,
-            ),
-            -item[0],
-            str(item[1]["uri"]),
-        ),
+
+    environment: dict[str, dict[str, list[dict[str, Any]]]] = {
+        "vegetation": {
+            family: [] for family in PHOTOREAL_FAMILY_MINIMUMS["vegetation"]
+        },
+        "buildings": {
+            family: [] for family in PHOTOREAL_FAMILY_MINIMUMS["buildings"]
+        },
+    }
+    for kind, candidates_by_family, preferred_suffixes in (
+        ("vegetation", vegetation_candidates, PREFERRED_VEGETATION_SUFFIXES),
+        ("buildings", building_candidates, PREFERRED_RURAL_BUILDING_SUFFIXES),
     ):
-        identity = _asset_family_identity(asset)
-        if asset["uri"] in selected_uris or identity in selected_identities:
-            continue
-        vegetation.append(asset)
-        selected_uris.add(str(asset["uri"]))
-        selected_identities.add(identity)
-        if len(vegetation) == MIN_VEGETATION_VARIANTS:
-            break
-    rural_building = None
-    for _score, asset in sorted(
-        building_candidates,
-        key=lambda item: (
-            _preferred_rank(
-                str(item[1]["uri"]),
-                PREFERRED_RURAL_BUILDING_SUFFIXES,
-            ),
-            -item[0],
-            str(item[1]["uri"]),
-        ),
-    ):
-        identity = _asset_family_identity(asset)
-        if asset["uri"] not in selected_uris and identity not in selected_identities:
-            rural_building = asset
-            selected_uris.add(str(asset["uri"]))
-            selected_identities.add(identity)
-            break
+        for family, minimum in PHOTOREAL_FAMILY_MINIMUMS[kind].items():
+            for _score, asset in sorted(
+                candidates_by_family[family],
+                key=lambda item: (
+                    (
+                        0
+                        if (
+                            kind == "vegetation"
+                            and item[1].get("source_index")
+                            == "Assets/Vegetation S3 inventory"
+                        )
+                        else 1
+                    ),
+                    _preferred_rank(str(item[1]["uri"]), preferred_suffixes),
+                    -item[0],
+                    str(item[1]["uri"]),
+                ),
+            ):
+                identity = _asset_family_identity(asset)
+                if (
+                    str(asset["uri"]) in selected_uris
+                    or identity in selected_identities
+                ):
+                    continue
+                environment[kind][family].append(asset)
+                selected_uris.add(str(asset["uri"]))
+                selected_identities.add(identity)
+                if len(environment[kind][family]) == minimum:
+                    break
+
+    missing_environment = [
+        f"{kind}.{family}"
+        for kind, families in PHOTOREAL_FAMILY_MINIMUMS.items()
+        for family, minimum in families.items()
+        if len(environment[kind][family]) < minimum
+    ]
     actors: dict[str, dict[str, Any]] = {}
     for class_id, matcher in _ACTOR_MATCHERS.items():
         matches = []
         for asset in inventory:
-            identity = str(asset.get("provider_hash") or asset["uri"])
-            if asset["uri"] in selected_uris or identity in selected_identities:
+            identity = _asset_family_identity(asset)
+            if (
+                str(asset["uri"]) in selected_uris
+                or identity in selected_identities
+            ):
                 continue
             normalized, tokens = _normalize_uri(str(asset["uri"]))
             if matcher(normalized, tokens):
@@ -1186,23 +1960,14 @@ def select_simready_assets(
                     str(asset["uri"]),
                 ),
             )[0]
-            actors[class_id] = selected
+            identity = _asset_family_identity(selected)
             selected_uris.add(str(selected["uri"]))
-            selected_identities.add(
-                str(selected.get("provider_hash") or selected["uri"])
-            )
+            selected_identities.add(identity)
+            actors[class_id] = selected
     return {
-        "vegetation": vegetation,
-        "rural_building": rural_building,
+        "environment": environment,
         "actors": actors,
-        "missing_environment": [
-            *(
-                ["vegetation"]
-                if len(vegetation) < MIN_VEGETATION_VARIANTS
-                else []
-            ),
-            *(["rural_building"] if rural_building is None else []),
-        ],
+        "missing_environment": missing_environment,
         "missing_actor_classes": sorted(set(_ACTOR_MATCHERS) - set(actors)),
     }
 
@@ -1210,6 +1975,7 @@ def select_simready_assets(
 def _wrapper_entry(
     *,
     role: str,
+    family: str,
     asset: dict[str, Any],
     wrapper_root: Path,
     manifest_root: Path,
@@ -1231,10 +1997,35 @@ def _wrapper_entry(
     provider_version = str(asset.get("provider_version", "")).replace('"', '\\"')
     source_meters_per_unit = float(asset.get("source_meters_per_unit", 1.0))
     source_up_axis = str(asset.get("source_up_axis", "Z"))
-    if source_up_axis != "Z":
+    if source_up_axis not in {"Y", "Z"}:
         raise RuntimeError(
-            f"automatic NVIDIA wrapper requires a Z-up source: {remote_uri}"
+            f"automatic NVIDIA wrapper has an unsupported source up axis: "
+            f"{remote_uri}: {source_up_axis}"
         )
+    raw_anchor = asset.get("ground_anchor_m")
+    if (
+        isinstance(raw_anchor, list)
+        and len(raw_anchor) == 3
+        and all(
+            isinstance(value, (int, float))
+            and not isinstance(value, bool)
+            and math.isfinite(float(value))
+            for value in raw_anchor
+        )
+    ):
+        normalized_anchor = [float(value) for value in raw_anchor]
+    else:
+        normalized_anchor = [0.0, 0.0, 0.0]
+    rotation_block = (
+        '        double xformOp:rotateX = 90\n'
+        if source_up_axis == "Y"
+        else ""
+    )
+    source_xform_order = (
+        '["xformOp:rotateX", "xformOp:scale"]'
+        if source_up_axis == "Y"
+        else '["xformOp:scale"]'
+    )
     _atomic_write_text(
         wrapper,
         f'''#usda 1.0
@@ -1249,30 +2040,148 @@ def _wrapper_entry(
         string fireviewer_source_uri = "{source_for_string}"
     }}
 )
-def Xform "Asset" (
-    prepend references = @{source_for_usda}@
-) {{
-    float3 xformOp:scale = ({source_meters_per_unit:.9g}, {source_meters_per_unit:.9g}, {source_meters_per_unit:.9g})
-    uniform token[] xformOpOrder = ["xformOp:scale"]
+def Xform "Asset"
+{{
+    double3 xformOp:translate = ({-normalized_anchor[0]:.9g}, {-normalized_anchor[1]:.9g}, {-normalized_anchor[2]:.9g})
+    uniform token[] xformOpOrder = ["xformOp:translate"]
+    def Xform "Source" (
+        prepend references = @{source_for_usda}@
+    )
+    {{
+{rotation_block}        float3 xformOp:scale = ({source_meters_per_unit:.9g}, {source_meters_per_unit:.9g}, {source_meters_per_unit:.9g})
+        uniform token[] xformOpOrder = {source_xform_order}
+    }}
 }}
 ''',
     )
-    return {
+    licence_id = str(asset.get("license_id") or NVIDIA_ASSET_LICENSE_ID)
+    licence_uri = str(asset.get("license_uri") or NVIDIA_ASSET_LICENSE_URI)
+    source_anchor = list(normalized_anchor)
+    metadata = {
+        "native_dimensions_m": dict(
+            asset.get(
+                "native_dimensions_m",
+                {"x": 0.0, "y": 0.0, "z": 0.0},
+            )
+        ),
+        # The wrapper has already moved the validated source bottom-centre to
+        # its local origin.  Scene instancers therefore place at terrain Z
+        # without reapplying a provider-specific pivot offset.
+        "ground_anchor_m": (
+            [0.0, 0.0, 0.0]
+            if str(
+                asset.get("anchor_validation", {}).get("state", "")
+            )
+            == "passed"
+            else []
+        ),
+        "anchor_validation": dict(
+            asset.get(
+                "anchor_validation",
+                {"state": "pending_native_validation"},
+            )
+        ),
+        "lod": dict(
+            asset.get(
+                "lod",
+                {
+                    "state": "pending_native_validation",
+                    "strategy": "unknown",
+                    "levels": [],
+                    "level_count": 0,
+                },
+            )
+        ),
+        "materials": dict(
+            asset.get(
+                "materials",
+                {
+                    "state": "pending_native_validation",
+                    "material_prim_count": 0,
+                    "bound_material_prim_count": 0,
+                    "resolved_asset_dependency_count": 0,
+                    "unresolved_dependencies": [],
+                },
+            )
+        ),
+        "placement": dict(
+            asset.get(
+                "placement",
+                {
+                    "grounding": "native_anchor",
+                    "scale_policy": "uniform_only",
+                    "non_uniform_scale_allowed": False,
+                    "minimum_uniform_scale": 0.8,
+                    "maximum_uniform_scale": 1.25,
+                },
+            )
+        ),
+    }
+    provider_metadata_validation = str(
+        asset.get("metadata_validation_sha256", "")
+    )
+    # The wrapper changes the coordinate contract (metres, Z-up, bottom-centre
+    # at the origin), so the entry hash must bind the normalized metadata, not
+    # the provider-stage metadata inspected before wrapping.
+    metadata_validation = _metadata_validation_sha256(metadata)
+    entry = {
+        "asset_id": f"{family}:{identity}",
+        "family": family,
+        "identity": {
+            "source_name": Path(urllib.parse.unquote(remote_uri)).stem,
+            "source_identity": _asset_family_identity(asset),
+        },
         "path": os.path.relpath(wrapper, manifest_root).replace("\\", "/"),
         "sha256": _sha256(wrapper),
-        "quality_validation": "pending_console_review",
+        "quality_validation": (
+            "native_metadata_passed"
+            if (
+                metadata["anchor_validation"].get("state") == "passed"
+                and metadata["lod"].get("state") == "passed"
+                and metadata["materials"].get("state") == "passed"
+            )
+            else "pending_native_validation"
+        ),
         "placement_validation": "pending_console_review",
-        "provenance": "nvidia_simready",
+        "provenance": {
+            "provider": "NVIDIA Omniverse",
+            "source_uri": remote_uri,
+            "provider_hash": str(asset.get("provider_hash", "")),
+            "provider_version": str(asset.get("provider_version", "")),
+            "discovery": "official_nvidia_isaac_6_0",
+        },
+        "license": {
+            "id": licence_id,
+            "uri": licence_uri,
+            "redistribution": (
+                "nvidia_asset_not_bundled_verify_output_use_before_release"
+            ),
+        },
         "source_uri": remote_uri,
         "provider_hash": str(asset.get("provider_hash", "")),
         "provider_version": str(asset.get("provider_version", "")),
         "provider_size_bytes": int(
             asset.get("provider_size_bytes", asset.get("size_bytes", 0))
         ),
-        "source_meters_per_unit": source_meters_per_unit,
-        "source_up_axis": source_up_axis,
+        "source_meters_per_unit": 1.0,
+        "source_up_axis": "Z",
+        "provider_source_meters_per_unit": source_meters_per_unit,
+        "provider_source_up_axis": source_up_axis,
+        "provider_ground_anchor_m": source_anchor,
+        "provider_metadata_validation_sha256": provider_metadata_validation,
         "dependency_count": int(asset.get("dependency_count", 0)),
         "content_lock_sha256": str(asset.get("content_lock_sha256", "")),
+        **metadata,
+        "metadata_validation_sha256": metadata_validation,
+        "materialized_files": [
+            {
+                "path": str(item.get("path", "")),
+                "sha256": str(item.get("sha256", "")),
+                "size_bytes": int(item.get("size_bytes", -1)),
+            }
+            for item in asset.get("materialized_files", [])
+            if isinstance(item, dict)
+        ],
         "source_cache_path": (
             os.path.relpath(Path(local_path), manifest_root).replace("\\", "/")
             if local_path is not None
@@ -1286,16 +2195,10 @@ def Xform "Asset" (
             if asset.get("thumbnail_path")
             else ""
         ),
-        "license_id": str(
-            asset.get("license_id") or NVIDIA_ASSET_LICENSE_ID
-        ),
-        "license_uri": str(
-            asset.get("license_uri") or NVIDIA_ASSET_LICENSE_URI
-        ),
-        "redistribution": (
-            "nvidia_asset_not_bundled_verify_output_use_before_release"
-        ),
+        "license_id": licence_id,
+        "license_uri": licence_uri,
     }
+    return entry
 
 
 def provision_official_nvidia_manifest(
@@ -1317,13 +2220,12 @@ def provision_official_nvidia_manifest(
         volume_root=volume,
     )
     selection = select_simready_assets(candidates)
+    environment_selection = selection["environment"]
     selected_environment = [
-        *selection["vegetation"],
-        *(
-            [selection["rural_building"]]
-            if selection["rural_building"] is not None
-            else []
-        ),
+        asset
+        for kind in ("vegetation", "buildings")
+        for family in PHOTOREAL_FAMILY_MINIMUMS[kind]
+        for asset in environment_selection[kind][family]
     ]
     locked_environment: list[dict[str, Any]] = []
     vegetation_assets = [
@@ -1359,9 +2261,22 @@ def provision_official_nvidia_manifest(
             materialized_by_uri.get(str(asset["uri"]), asset)
             for asset in selected_environment
         ]
-        vegetation_count = len(selection["vegetation"])
-        selection["vegetation"] = locked_environment[:vegetation_count]
-        selection["rural_building"] = locked_environment[vegetation_count]
+        locked_by_uri = {
+            str(asset["uri"]): asset for asset in locked_environment
+        }
+        for kind in ("vegetation", "buildings"):
+            for family in PHOTOREAL_FAMILY_MINIMUMS[kind]:
+                environment_selection[kind][family] = [
+                    locked_by_uri.get(str(asset["uri"]), asset)
+                    for asset in environment_selection[kind][family]
+                ]
+    family_counts = {
+        kind: {
+            family: len(environment_selection[kind][family])
+            for family in PHOTOREAL_FAMILY_MINIMUMS[kind]
+        }
+        for kind in ("vegetation", "buildings")
+    }
     write_progress(
         volume,
         phase="official_nvidia_asset_lock",
@@ -1370,32 +2285,34 @@ def provision_official_nvidia_manifest(
             "licence et empreintes locales."
         ),
         candidates_indexed=len(candidates),
-        vegetation_selected=len(selection["vegetation"]),
-        vegetation_required=MIN_VEGETATION_VARIANTS,
-        rural_building_selected=int(selection["rural_building"] is not None),
+        family_counts=family_counts,
+        family_minimums=PHOTOREAL_FAMILY_MINIMUMS,
         missing_environment=selection["missing_environment"],
     )
     wrapper_root = manifest.parent / "nvidia-simready-lock"
-    environment: dict[str, Any] = {"vegetation": []}
-    for index, asset in enumerate(selection["vegetation"]):
-        environment["vegetation"].append(
-            _wrapper_entry(
-                role=f"vegetation-{index:02d}",
-                asset=asset,
-                wrapper_root=wrapper_root,
-                manifest_root=manifest.parent,
-            )
-        )
-    if selection["rural_building"] is not None:
-        environment["rural_building"] = _wrapper_entry(
-            role="rural-building",
-            asset=selection["rural_building"],
-            wrapper_root=wrapper_root,
-            manifest_root=manifest.parent,
-        )
+    environment: dict[str, dict[str, list[dict[str, Any]]]] = {
+        "vegetation": {},
+        "buildings": {},
+    }
+    for kind in ("vegetation", "buildings"):
+        for family in PHOTOREAL_FAMILY_MINIMUMS[kind]:
+            family_id = f"{kind}.{family}"
+            environment[kind][family] = [
+                _wrapper_entry(
+                    role=f"{kind}-{family}-{index:02d}",
+                    family=family_id,
+                    asset=asset,
+                    wrapper_root=wrapper_root,
+                    manifest_root=manifest.parent,
+                )
+                for index, asset in enumerate(
+                    environment_selection[kind][family]
+                )
+            ]
     actors = {
         class_id: _wrapper_entry(
             role=f"actor-{class_id}",
+            family=f"actors.{class_id}",
             asset=asset,
             wrapper_root=wrapper_root,
             manifest_root=manifest.parent,
@@ -1405,11 +2322,13 @@ def provision_official_nvidia_manifest(
     payload = {
         "schema_version": MANIFEST_SCHEMA_VERSION,
         "profile": MANIFEST_PROFILE,
+        "library_policy": dict(PHOTOREAL_LIBRARY_POLICY),
+        "family_minimums": PHOTOREAL_FAMILY_MINIMUMS,
         "discovery": {
             "asset_root": _validate_official_root(asset_root),
             "candidate_count": len(candidates),
             "mode": (
-                "official_nvidia_materialized_lock_v2"
+                "materialized_photoreal_asset_library_v3"
                 if selected_environment
                 and all(asset.get("local_path") for asset in locked_environment)
                 else "official_nvidia_remote_reference_lock"
@@ -1432,13 +2351,27 @@ def provision_official_nvidia_manifest(
             "manifest": str(manifest),
             "manifest_sha256": _sha256(manifest),
             "candidate_count": len(candidates),
-            "selected_environment_assets": len(environment["vegetation"])
-            + int("rural_building" in environment),
+            "selected_environment_assets": sum(
+                len(entries)
+                for families in environment.values()
+                for entries in families.values()
+            ),
+            "family_counts": family_counts,
+            "family_minimums": PHOTOREAL_FAMILY_MINIMUMS,
             "selected_actor_assets": len(actors),
             "missing_environment": selection["missing_environment"],
             "missing_actor_classes": selection["missing_actor_classes"],
-            "production_ready": not selection["missing_environment"]
-            and not selection["missing_actor_classes"],
+            "production_ready": (
+                not selection["missing_environment"]
+                and not selection["missing_actor_classes"]
+                and bool(selected_environment)
+                and all(asset.get("local_path") for asset in locked_environment)
+                and all(
+                    asset.get("materials", {}).get("state") == "passed"
+                    and asset.get("lod", {}).get("state") == "passed"
+                    for asset in locked_environment
+                )
+            ),
         },
     )
     write_progress(
@@ -1456,8 +2389,12 @@ def provision_official_nvidia_manifest(
             else "Inventaire NVIDIA incomplet pour l'environnement pilote."
         ),
         candidates_indexed=len(candidates),
-        assets_locked=len(environment["vegetation"])
-        + int("rural_building" in environment),
+        assets_locked=sum(
+            len(entries)
+            for families in environment.values()
+            for entries in families.values()
+        ),
+        family_counts=family_counts,
         missing_environment=selection["missing_environment"],
         manifest=os.path.relpath(manifest, volume).replace("\\", "/"),
         report=os.path.relpath(report_path, volume).replace("\\", "/"),
@@ -1473,7 +2410,11 @@ def provision_official_nvidia_manifest(
 
 __all__ = [
     "DEFAULT_NVIDIA_ASSET_ROOT",
+    "MANIFEST_SCHEMA_VERSION",
     "MANIFEST_PROFILE",
+    "PHOTOREAL_FAMILY_MINIMUMS",
+    "PHOTOREAL_LIBRARY_POLICY",
+    "PHOTOREAL_MIN_LOD_LEVELS",
     "cache_official_nvidia_indexes",
     "discover_official_nvidia_assets",
     "discover_official_nvidia_assets_from_indexes",

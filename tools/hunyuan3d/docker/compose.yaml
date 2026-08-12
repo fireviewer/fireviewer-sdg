@@ -1,0 +1,23 @@
+services:
+  hunyuan3d:
+    image: fireviewer/asset4sim-hunyuan3d:2.0-runtime
+    build:
+      context: ../../..
+      dockerfile: tools/hunyuan3d/docker/Dockerfile
+      target: runtime
+    gpus: all
+    ports:
+      - "8188:8188"
+      - "8080:8080"
+      - "8888:8888"
+    environment:
+      FILEBROWSER_USERNAME: admin
+      FILEBROWSER_PASSWORD: ${FILEBROWSER_PASSWORD:?set FILEBROWSER_PASSWORD}
+      JUPYTER_TOKEN: ${JUPYTER_TOKEN:-}
+      DOWNLOAD_MODELS_ON_START: "1"
+    volumes:
+      - hunyuan3d-workspace:/workspace
+    restart: unless-stopped
+
+volumes:
+  hunyuan3d-workspace:

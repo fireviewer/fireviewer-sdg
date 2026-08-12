@@ -7,6 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     OMNI_KIT_ACCEPT_EULA=YES \
     ACCEPT_EULA=Y \
     PRIVACY_CONSENT=Y \
+    NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONPATH=/opt/fireviewer-sdg/src \
