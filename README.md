@@ -68,6 +68,10 @@ avant le lancement. Le wrapper Flow reste dans le volume et référence le prese
 dans le runtime Isaac épinglé sous `/opt`. Le format exact est décrit dans
 [docs/nvidia-real-world-pipeline.md](docs/nvidia-real-world-pipeline.md).
 
+## Frontière avec les reconstructions historiques
+
+Les packs FireViewer de reconstruction rétrospective de juillet 2026 ne sont pas des datasets synthétiques SDG. Les contours `reconstructed` dérivés de sources historiques ne doivent être requalifiés ni comme vérité synthétique, ni comme périmètre observé, ni comme prévision.
+
 ## Livrables séparés
 
 Les contrats savent représenter quatre familles de livrables :
@@ -294,3 +298,11 @@ Les LiDAR, datasets, bundles, caches, USD, rendus, résultats et archives resten
 sur le volume persistant ou dans le stockage d’artefacts. Les répertoires de
 production et les formats lourds sont ignorés par Git ; seuls le code, les
 contrats textuels, les tests et les exemples sans secret doivent être suivis.
+
+## Identité et contact
+
+FireViewer est un projet distinct de recherche et développement maintenu par **Unicorn Who Dev**.
+
+> FireViewer n’est ni un service d’alerte, ni une source officielle, ni un outil de conduite des secours. Les sorties et artefacts de ce dépôt exigent leur provenance, leurs gates propres et, lorsqu’ils concernent un incident, une validation humaine.
+
+Contact public, provenance, droits, sécurité et demandes de retrait : [unicornwhodev@gmail.com](mailto:unicornwhodev@gmail.com).
