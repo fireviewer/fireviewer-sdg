@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "status": "user_confirmed_visual_rejections",
+  "range": {
+    "start": 103,
+    "end": 294
+  },
+  "assets": [
+    {
+      "index": 106,
+      "asset_id": "ac78af1adf83_02_passage_a_gue_avec_dalle_ou_pierres",
+      "reason": "Geometrie fortement deformee et herissee; le passage a gue est inutilisable."
+    },
+    {
+      "index": 139,
+      "asset_id": "ce668aa42a15_03_mur_en_pierre_seche_modulaire",
+      "reason": "Mur trop plat et disjoint; retrait confirme par l'utilisateur apres controle visuel."
+    },
+    {
+      "index": 142,
+      "asset_id": "48f32c788f93_06_abreuvoir_de_paturage",
+      "reason": "Volume arriere massif et elements detaches; l'abreuvoir n'est pas exploitable."
+    },
+    {
+      "index": 143,
+      "asset_id": "7df37151f295_07_borne_ou_pompe_dirrigation",
+      "reason": "Pompe dissociee de sa base avec des elements flottants et deformes."
+    },
+    {
+      "index": 147,
+      "asset_id": "3790e74dae93_03_centre_technique_municipal",
+      "reason": "Coque du batiment incomplete sur la vue opposee; paroi et toiture ouvertes."
+    },
+    {
+      "index": 191,
+      "asset_id": "950c35cbde96_07_petit_barrage_vanne_hydraulique",
+      "reason": "Volume arriere en bassin surdimensionne et non conforme au module compact attendu; retrait confirme par l'utilisateur."
+    }
+  ]
+}

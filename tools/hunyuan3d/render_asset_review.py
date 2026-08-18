@@ -451,6 +451,8 @@ def write_csv(results: list[dict[str, Any]], path: Path) -> None:
 
 
 def write_html(results: list[dict[str, Any]], path: Path) -> None:
+    first_index = results[0]["index"] if results else 0
+    last_index = results[-1]["index"] if results else 0
     cards = []
     html_root = path.parent.resolve()
     for item in results:
@@ -463,7 +465,7 @@ def write_html(results: list[dict[str, Any]], path: Path) -> None:
         )
     document = f"""<!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Asset4Sim — revue visuelle 001–102</title>
+<title>Asset4Sim — revue visuelle {first_index:03d}–{last_index:03d}</title>
 <style>
 body{{margin:0;background:#0d1117;color:#e6edf3;font:16px Segoe UI,Arial,sans-serif}}
 header{{position:sticky;top:0;z-index:2;background:#171d26;padding:16px 24px;border-bottom:1px solid #303846}}
@@ -472,7 +474,7 @@ main{{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap
 .card{{display:block;color:#e6edf3;text-decoration:none;background:#171d26;border:2px solid #303846;border-radius:8px;overflow:hidden}}
 .card.pass{{border-color:#4dcd80}} .card.warning{{border-color:#f4b740}} .card.fail{{border-color:#ef5c5c}}
 .card img{{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}} .card span{{display:block;padding:10px 12px}}
-</style></head><body><header><h1>Asset4Sim — captures 001 à 102</h1>
+</style></head><body><header><h1>Asset4Sim — captures {first_index:03d} à {last_index:03d}</h1>
 <p>Cliquer sur une fiche pour ouvrir la capture complète. Vert : OK, orange : avertissement, rouge : échec.</p></header>
 <main>{''.join(cards)}</main></body></html>"""
     path.write_text(document, encoding="utf-8")

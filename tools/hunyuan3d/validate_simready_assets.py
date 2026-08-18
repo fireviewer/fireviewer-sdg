@@ -18,9 +18,6 @@ from PIL import Image
 from pxr import Usd, UsdGeom, UsdShade
 
 
-EXPECTED_REJECTED = {26, 28, 52, 85, 87, 88, 100}
-
-
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -115,7 +112,7 @@ def validate_asset(report: dict[str, Any], assets_root: Path) -> dict[str, Any]:
         ratios = corrected_extents / source_extents
         if float(np.max(ratios) - np.min(ratios)) > 1e-4:
             errors.append(f"non-uniform scale ratios: {ratios.tolist()}")
-        scale = report["scale_color"]
+        scale = report.get("scale") or report["scale_color"]
         mode = scale["mode"]
         target_m = float(scale["target_m"])
         glb_dimension = float(corrected_extents[1] if mode == "height_y" else np.max(corrected_extents))
@@ -220,22 +217,29 @@ def run(args: argparse.Namespace) -> int:
     assets_root = args.active_manifest.parent / "assets"
     active_indices = [int(item["index"]) for item in active["assets"]]
     rejected_indices = [int(item["index"]) for item in rejected["assets"]]
+    expected_rejected = {
+        int(value) for value in args.expected_rejected.split(",") if value.strip()
+    }
+    expected_indices = set(range(args.start, args.end + 1))
+    expected_active_count = len(expected_indices - expected_rejected)
     library_errors: list[str] = []
     if len(active_indices) != len(set(active_indices)):
         library_errors.append("duplicate active indices")
     if len(rejected_indices) != len(set(rejected_indices)):
         library_errors.append("duplicate rejected indices")
-    if set(rejected_indices) != EXPECTED_REJECTED:
+    if set(rejected_indices) != expected_rejected:
         library_errors.append(f"rejected set mismatch: {sorted(rejected_indices)}")
-    if set(active_indices) | set(rejected_indices) != set(range(1, 103)):
-        library_errors.append("active/rejected index union is not exactly 001-102")
+    if set(active_indices) | set(rejected_indices) != expected_indices:
+        library_errors.append(
+            f"active/rejected index union is not exactly {args.start:03d}-{args.end:03d}"
+        )
     if set(active_indices) & set(rejected_indices):
         library_errors.append("an index is both active and rejected")
     asset_dirs = [path for path in assets_root.iterdir() if path.is_dir()]
     directory_indices = {int(path.name[:3]) for path in asset_dirs}
     if directory_indices != set(active_indices):
         library_errors.append("active directory indices do not match active manifest")
-    if directory_indices & EXPECTED_REJECTED:
+    if directory_indices & expected_rejected:
         library_errors.append("a rejected asset directory exists in the active library")
     building_root = args.active_manifest.parent / ".building"
     if building_root.is_dir() and any(building_root.iterdir()):
@@ -252,14 +256,14 @@ def run(args: argparse.Namespace) -> int:
         "schema_version": 1,
         "active_manifest": str(args.active_manifest.resolve()),
         "rejected_manifest": str(args.rejected_manifest.resolve()),
-        "expected_active_count": 95,
-        "expected_rejected_indices": sorted(EXPECTED_REJECTED),
+        "expected_active_count": expected_active_count,
+        "expected_rejected_indices": sorted(expected_rejected),
         "asset_directory_count": len(asset_dirs),
         "asset_count": len(results),
         "passed_count": passed,
         "failed_count": len(results) - passed,
         "library_errors": library_errors,
-        "passed": passed == 95 and len(results) == 95 and not library_errors,
+        "passed": passed == expected_active_count and len(results) == expected_active_count and not library_errors,
         "assets": results,
     }
     atomic_json(args.report, report)
@@ -272,6 +276,9 @@ def main() -> int:
     parser.add_argument("--active-manifest", type=Path, required=True)
     parser.add_argument("--rejected-manifest", type=Path, required=True)
     parser.add_argument("--report", type=Path, required=True)
+    parser.add_argument("--start", type=int, default=1)
+    parser.add_argument("--end", type=int, default=102)
+    parser.add_argument("--expected-rejected", default="26,28,52,85,87,88,100")
     return run(parser.parse_args())
 
 
